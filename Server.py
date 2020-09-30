@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate
+from restaurantApp.models import *
 
 
 class Server:
     def __init__(self):
         self.isLogged = False
         self.user = None
+        self.current_employee = None
         self.menu()
 
     def login(self, user_login, password):
@@ -12,9 +14,10 @@ class Server:
         if user is not None:
             self.isLogged = True
             self.user = user
-            print(user)
+            self.current_employee = Employee.objects.get(user__username=user_login)
+            print(f"\nWitaj, {self.current_employee.person}")
         else:
-            print("Invialid credentials")
+            print("\nInvialid credentials")
 
         self.menu()
 
@@ -22,12 +25,12 @@ class Server:
         print("*** MENU ***\n")
         if self.isLogged:
             print("1. Logout\n")
-            print("2. End\n")
+            print("2. Koniec\n")
 
         else:
             print("1. Login")
-            print("2. End")
-            choise = input("Wybor: ")
+            print("2. Koniec")
+            choise = input("\nWybor: ")
             if choise == "1":
                 log = input("Login: ")
                 password = input("Password: ")
