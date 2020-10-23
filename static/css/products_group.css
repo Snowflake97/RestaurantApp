@@ -1,0 +1,50 @@
+.main-window{
+    border: 1px solid black;
+    position: absolute;
+    right: 5%;
+    height: 80%;
+    /*transform: translate(-50%, -50%);*/
+    left: 5%;
+    top: 80px;
+}
+
+.option-windows{
+    border: 1px solid red;
+    position: absolute;
+    /*transform: translate(-50%, -50%);*/
+    /*left: 20px;*/
+    /*top:100px;*/
+    width: 20%;
+    height: 100%;
+}
+.view-window{
+    border: 1px solid green;
+    position: absolute;
+    /*transform: translate(-50%, -50%);*/
+    /*left: 20px;*/
+    right: 0px;
+    width: 80%;
+    height: 100%;
+}
+.card-body{
+    padding: 0px 0px 0px 0px;
+}
+
+.addSign{
+    font-size: 20px;
+    color: green;
+    position: absolute;
+    right: 3%;
+}
+
+.quantity-popup{
+    position: absolute ;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    background: white;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+
+    /*display: block;*/
+}

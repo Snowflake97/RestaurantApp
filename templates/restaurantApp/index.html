@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Index page</h1>
+{% extends "restaurantApp/base.html" %}
 
-</body>
-</html>
+{% block body_block %}
+    <div class="jumbotron">
+    <h1>Inzynierka</h1>
+    {% if user.is_authenticated %}
+        <p>Zalogowano użytkownika: {{ user.employee }}</p>
+        <p>Konto: {{ user }}</p>
+    {% endif %}
+    </div>
+{% endblock %}

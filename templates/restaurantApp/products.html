@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>Pisiłki</h1>
+        <ol>
+            {% for product in products %}
+                {% if product.product_type == 'P' %}
+                    <li> {{ product }} </li>
+                    <ul>
+                        {% for product_ingredient in products_ingredients %}
+                            {% if product == product_ingredient.product %}
+                                <li>
+                                    {{ product_ingredient.ingredient.name }}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        </ol>
+
+        <h1>Napoje</h1>
+        <ol>
+            {% for product in products %}
+                {% if product.product_type == 'N' %}
+                    <li> {{ product }} </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+{% endblock %}
+

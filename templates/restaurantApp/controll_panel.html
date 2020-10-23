@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <table class="center">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:new_order' %}'">Nowe zamówienie
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:active_orders' %}'">Aktywne zamówienia
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:products_group' %}'">Podgląd produktów
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:new_product' 'U'%}'">Dodaj produkt
+                    </button>
+                </td>
+
+
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:reservation' %}'">Zarezerwuj stolik
+                    </button>
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:products' %}'">Menu
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-warning btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:index' %}'">Wróć
+                    </button>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+{% endblock %}

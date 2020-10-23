@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>{{ product_order }}</h1>
+        <form id="editProductOrderForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for id="quantity">Ilość: </label>
+            <input id="quantity" name="quantity" type="number" value="{{ product_order.quantity }}" min="0">
+            <button type="submit" class="btn btn-primary btn-lg"> Zapisz
+            </button>
+        </form>
+    </div>
+{% endblock %}

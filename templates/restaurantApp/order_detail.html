@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Ilość</th>
+                <th scope="col">Produkt</th>
+                <th scope="col">Cena za sztukę</th>
+                <th scope="col">Handle</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product_order in products_order %}
+                <tr>
+                    <td>{{ product_order.quantity }}x</td>
+                    <td>{{ product_order.product.name }}</td>
+                    <td>{{ product_order.product.price }} zł</td>
+
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg"
+                                onclick="location.href='{% url 'restaurantApp:edit_product_order' product_order.id %}'">
+                            Edytuj
+                        </button>
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+        <p> {{ order_detail.date }}</p>
+        <p> {{ order_detail.employee }}</p>
+        <table class="center">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{% url 'restaurantApp:order_add_meal' order_detail.id %}'">Dodaj produkt do zamówienia
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:delete_order' order_detail.id %}'">Usuń
+                        zamówienie
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

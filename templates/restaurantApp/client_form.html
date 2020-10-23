@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+    <h1>{{ restaurant }}</h1>
+        <p>{{ reservation_date|date:"d.m.Y" }} ({{ time_start|date:"H.i" }}-{{ time_end|date:"H.i" }})</p>
+        <form id="makeReservation" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="name">Imie:</label>
+            <input id="name" type="text" required name="name">
+            <p></p>
+            <label for="phone">Telefon kontaktowy:</label>
+            <input id="phone" type="text" required name="phone">
+            <p></p>
+            <input type="submit">
+        </form>
+
+    </div>
+{% endblock %}

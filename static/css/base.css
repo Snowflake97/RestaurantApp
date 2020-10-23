@@ -1,0 +1,48 @@
+button:focus {
+    outline: 0;
+}
+
+.navbar .dropdown-menu .form-control {
+    width: 200px;
+}
+
+.popup {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    background: white;
+    display: none;
+    /*transition: all 0.4s;*/
+}
+
+.login-popup .form-signin {
+    padding: 10% 10% 10% 10%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.login-popup .form-signin input {
+    border: 1px solid silver;
+}
+
+.login-popup #password {
+    margin-top: 2%;
+}
+
+.login-popup .close-btn {
+    position: absolute;
+    padding-left: 9%;
+    top: 15px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.login-popup .close-btn:hover {
+    color: deepskyblue;
+}
+
+.login-popup #remember_me {
+    margin-top: 10%;
+}

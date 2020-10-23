@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+{% block body_block %}
+{#    <style>#}
+{#        .login-popup {#}
+{#            display: none;#}
+{#            padding-left: 35%;#}
+{#            padding-right: 35%;#}
+{#            padding-top: 10%;#}
+{#        }#}
+{##}
+{#        .login-popup .form-signin {#}
+{#            padding: 10% 10% 10% 10%;#}
+{#            box-shadow: 0 0 8px rgba(0, 1, 0, 0.5);#}
+{#        }#}
+{#        .login-popup .form-signin input{#}
+{#            border: 1px solid silver;#}
+{#        }#}
+{#        .login-popup .close-btn{#}
+{#            position: absolute;#}
+{#            padding-left: 9%;#}
+{#            top: 180px;#}
+{#            cursor: pointer;#}
+            {#top: 20px;#}
+            {#left: 200px;#}
+{#        }#}
+{#        .login-popup .close-btn:hover{#}
+{#            color: deepskyblue;#}
+{#        }#}
+{##}
+{#        .login-popup #remember_me {#}
+{#            margin-top: 10%;#}
+{#        }#}
+{##}
+{#        .login-popup #password {#}
+{#            margin-top: 2%;#}
+{#        }#}
+{#    </style>#}
+    <div class="container" align="center">
+        <div class="login-popup">
+
+            <form class="form-signin" method="post">
+                {% csrf_token %}
+                <label for="" class="close-btn fas fa-times"></label>
+                <img class="mb-4" src="{% static "imgs/apple-touch-icon.png" %}" alt="" width="72" height="72">
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <label for="username" class="sr-only">User name</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="User name" required
+                       autofocus>
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password"
+                       required>
+                <div class="checkbox mb-3">
+                    <label>
+                        <input id="remember_me" type="checkbox" name="remember_me" id="remember_me" value="remember">
+                        Remember me
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+

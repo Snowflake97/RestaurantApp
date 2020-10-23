@@ -8,6 +8,7 @@ django.setup()
 
 from restaurantApp.models import *
 from datetime import datetime
+import datetime
 
 
 def printProductsByIngredient(ingredientName):
@@ -27,21 +28,9 @@ def printProductWithIngriedients(productName):
         print(f"- {meal.ingredient}")
 
 
-# printProductWithIngriedients("Sandwitch")
-# product = Product.objects.last()
-# order = Order.objects.get(id=1)
-# order.add_product(product, 1)
-# print(order.get_products())
-# print(order.get_price())
-# order.close_order('K')
+start_date = "2020-01-01"
+end = "2020-12-30"
 
-# for order in Order.objects.all():
-#     print(order.employee)
-
-
-table = Table.objects.get(id=1)
-c = datetime(hour = 11, minute = 34, second=12)
-print(c)
-print(type(c))
-table.is_free(c)
-print(table)
+r = Restaurant.objects.get(id=1)
+print(r.get_ingredients_usage_from_time_period(start_date, end))
+print(r.get_income_from_time_period(start_date, end))

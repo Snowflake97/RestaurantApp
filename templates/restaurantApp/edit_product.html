@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <form id="newProduct" method="post" enctype="multipart/form-data" name="product">
+        {% csrf_token %}
+        <label for="product-name">Nazwa produktu:</label>
+        <input type="text" id="product-name" name="product-name" required value="{{ product.name }}">
+        <p></p>
+        <label for="product-price">Cena produktu:</label>
+        <input type="number" step="0.01" id="product-price" name="product-price" min="0" required
+               value="{{ product.price }}">
+        <p></p>
+
+        <select name="product-type">
+
+            {% if product.product_type == "P" %}
+                <option value="P">Posiłek</option>
+            {% elif product.product_type == "N" %}
+                <option value="N">Napój</option>
+            {% endif %}
+        </select>
+        <p></p>
+        {% for ing,quantity in ingredients %}
+            {% if quantity == 0 %}
+                <input class="checkboxes" type="checkbox" id="{{ ing.id }}" value="{{ ing.id }}"
+                       name="ID:{{ ing.name }}">
+                <label for="{{ ing.id }}">{{ ing.name }}</label>
+                <input class="quantity-input" type="number" id="input-{{ ing.id }}" name="QUANTITY:{{ ing.name }}"
+                       min="0" disabled value="0">
+                {{ ing.quantity_type }}
+
+            {% else %}
+                <input class="checkboxes" type="checkbox" id="{{ ing.id }}" value="{{ ing.id }}"
+                       name="ID:{{ ing.name }}" checked>
+                <label for="{{ ing.id }}">{{ ing.name }}</label>
+                <input class="quantity-input" type="number" id="input-{{ ing.id }}" name="QUANTITY:{{ ing.name }}"
+                       min="0" value="{{ quantity }}">
+                {{ ing.quantity_type }}
+            {% endif %}
+            <p></p>
+            {#            <p>{{ ing }} - {{ quantity }}</p>#}
+        {% endfor %}
+
+        <input type="submit">
+    </form>
+{% endblock %}
+{% block script %}
+    <script>
+        console.log($(".quantity-input"))
+        $(".checkboxes").click(function () {
+            var element_id = "#input-" + this.id
+            if ($(element_id).attr('disabled')) {
+                $(element_id).removeAttr('disabled');
+            } else {
+                $(element_id).attr('disabled', 'disabled');
+            }
+        })
+    </script>
+{% endblock %}

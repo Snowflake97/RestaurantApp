@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1> Aktywne zamowienia </h1>
+        <table class="center">
+            <tr>
+                {% for order in active_orders %}
+                    {% if forloop.counter0|divisibleby:4 %}
+                        </tr>
+                        <tr>
+                    {% endif %}
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg"
+                                onclick="location.href='{% url 'restaurantApp:order_detail' order.id %}'">{{ order }}
+                        </button>
+                    </td>
+                {% endfor %}
+                </tr>
+            <td>
+                <button type="back-button" class="btn btn-warning btn-lg"
+                        onclick="location.href='{% url 'restaurantApp:controll_panel' %}'">Wróć
+                </button>
+            </td>
+        </table>
+    </div>
+{% endblock %}

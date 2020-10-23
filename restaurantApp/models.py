@@ -4,11 +4,6 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 import datetime
 
-def time_in_between(now, start, end):
-    if start <= end:
-        return start >= now > end
-    else:
-        return start <= now or now < end
 
 # Create your models here.
 class Ingredient(models.Model):
@@ -29,7 +24,6 @@ class Ingredient(models.Model):
         for restaurant in Restaurant.objects.all():
             storage = Storage.objects.create(ingredient_id=self.id, restaurant=restaurant, quantity=0)
             storage.save()
-
 
 
 class Address(models.Model):
@@ -55,16 +49,44 @@ class Restaurant(models.Model):
         for ingredient in Ingredient.objects.all():
             storage = Storage.objects.create(restaurant_id=self.id, ingredient=ingredient, quantity=0)
             storage.save()
+
     def __str__(self):
         return f"Oddział {self.address.city}(ul. {self.address.street_name})"
 
+    def get_orders_from_time_period(self, date_start, date_end):
+        orders_from_restuarant = []
+        orders = Order.objects.filter(date__range=[date_start, date_end])
+        for order in orders:
+            if order.employee.restaurant.id == self.id:
+                orders_from_restuarant.append(order)
+        return orders_from_restuarant
+
+    def get_ingredients_usage_from_time_period(self, date_start, date_end):
+        ingredients_dictonary = {}
+        orders = self.get_orders_from_time_period(date_start, date_end)
+        for order in orders:
+            order_ingredients = order.get_ingredients_usage()
+            for order_ing in order_ingredients:
+                if ingredients_dictonary.get(order_ing):
+                    ingredients_dictonary[order_ing] += order_ingredients[order_ing]
+                else:
+                    ingredients_dictonary = {**ingredients_dictonary, **{order_ing: order_ingredients[order_ing]}}
+
+        return ingredients_dictonary
+
+    def get_income_from_time_period(self, date_start, date_end):
+        orders = self.get_orders_from_time_period(date_start, date_end)
+        total_value = 0
+        for order in orders:
+            total_value += order.total_price
+
+        return total_value
+
+
 class Storage(models.Model):
-    #     field for restaurant id
-    # TODO del default
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-
 
     def __str__(self):
         return f"{self.restaurant} - {self.ingredient.name} ({self.quantity} {self.ingredient.quantity_type})"
@@ -80,19 +102,35 @@ class Product(models.Model):
 
     PRODUCT_TYPES = (
         ('N', 'Napój'),
-        ('P', 'Posiłek')
+        ('P', 'Posiłek'),
+        ('D', 'Dodatek')
     )
     product_type = models.CharField(max_length=3, choices=PRODUCT_TYPES, default='P')
 
     def __str__(self):
         return f"{self.name} ({self.price})"
 
+    def get_ingredients_with_quantity(self):
+        ingredients = []
+        products_ingredients = ProductIngredient.objects.filter(product_id=self.id)
+        for product_ingredient in products_ingredients:
+            ingredients.append((product_ingredient.ingredient, product_ingredient.quantity_usage))
+
+        return ingredients
+
+    def get_ingredients(self):
+        ingredients = []
+        products_ingredients = ProductIngredient.objects.filter(product_id=self.id)
+        for product_ingredient in products_ingredients:
+            ingredients.append((product_ingredient.ingredient))
+
+        return ingredients
+
 
 class ProductIngredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity_usage = models.IntegerField(default=0)
-
 
     def __str__(self):
         return f"{self.product.name} - {self.ingredient.name} ({self.quantity_usage} {self.ingredient.quantity_type})"
@@ -178,6 +216,10 @@ class Order(models.Model):
         self.recalculate_total_price()
         product_order.save()
 
+    def get_product_quantity(self, product):
+        quantity = ProductOrder.objects.get(order_id=self.id, product=product).quantity
+        return quantity
+
     def __str__(self):
         return f"Zamowienie: {self.id}"
 
@@ -188,14 +230,29 @@ class Order(models.Model):
             restaurant = Restaurant.objects.get(employee=self.employee)
             products_order = ProductOrder.objects.all().filter(order_id=self.id)
             for product in products_order:
+                product_order_quantity = product.quantity
                 product_ingredients = ProductIngredient.objects.filter(product=product.product)
                 for product_ingredient in product_ingredients:
                     ingredient = product_ingredient.ingredient
                     quantity = product_ingredient.quantity_usage
                     storage = Storage.objects.get(ingredient=ingredient, restaurant=restaurant)
-                    storage.quantity -= quantity
+                    storage.quantity -= quantity * product_order_quantity
                     storage.save()
             super().save()
+
+    def get_ingredients_usage(self):
+        ingredients_dictonary = {}
+        products = self.get_products()
+        for product in products:
+            ingredients = product.get_ingredients_with_quantity()
+            quantity = ProductOrder.objects.get(product=product, order_id=self.id).quantity
+            for ingredient, quantity_usage in ingredients:
+                if ingredients_dictonary.get(ingredient.name):
+                    ingredients_dictonary[ingredient.name] += quantity_usage * quantity
+                else:
+                    ingredients_dictonary = {**ingredients_dictonary, **{ingredient.name: quantity * quantity_usage}}
+
+        return ingredients_dictonary
 
 
 class ProductOrder(models.Model):
@@ -211,36 +268,46 @@ class ProductOrder(models.Model):
     def __str__(self):
         return f"Zamowienie: {self.order.id} - {self.product} x{self.quantity}"
 
+
 class Table(models.Model):
     table_number = models.IntegerField()
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    chairs_quantity = models.IntegerField(default=2)
 
     def __str__(self):
         return f"Stolik: {self.table_number} - {self.restaurant}"
 
-    def is_free(self, time):
-        reservations = Reservation.objects.filter(table_id=self.id)
+    def is_free(self, date, reservation_start, reservation_end):
+        reservations = Reservation.objects.filter(table_id=self.id, date=date)
         for reservation in reservations:
-            start = reservation.date_start.strftime("%H:%M:%S")
-            end = reservation.date_end.strftime("%H:%M:%S")
-            # current_time = datetime.datetime.now()
-            current_time = time
-            print(type(time))
-            print("Current Time =", current_time)
+            start = reservation.time_start.replace(tzinfo=None)
+            end = reservation.time_end.replace(tzinfo=None)
 
-            print("Start =", start)
-            print("End =", end)
-            if time_in_between(current_time, start, end) == False:
-                print("Stolik zajety")
-            else:
-                print("Stolik wolny")
-            # print(reservation.date_start)
+            if (reservation_start >= start and reservation_end <= end) or (
+                    reservation_end > start and reservation_end <= end) or (
+                    reservation_start >= start and reservation_start < end) or (
+                    reservation_start <= start and reservation_end >= end):
+                return False
+        return True
 
+    def make_reservation(self, client_name, client_phone, reservation_start, reservation_end):
+        if self.is_free(reservation_start, reservation_end):
+            reservation = Reservation.objects.create(client_name=client_name, client_phone=client_phone,
+                                                     date_start=reservation_start, date_end=reservation_end,
+                                                     table_id=self.id)
+            reservation.save()
+            print("Zarezerwowano stolik")
+        else:
+            print("Stolika nie mozna zarezerwowac")
 
 
 class Reservation(models.Model):
     client_name = models.CharField(max_length=100)
     client_phone = models.CharField(max_length=100)
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
+    date = models.DateField(default=datetime.date.today)
+    time_start = models.TimeField(default=datetime.datetime.now().replace(tzinfo=None))
+    time_end = models.TimeField(default=datetime.datetime.now().replace(tzinfo=None))
+
+    def __str__(self):
+        return f"Stolik {self.table} ({self.date.strftime('%Y-%m-%d')}) ({self.time_start.strftime('%H:%M')} - {self.time_end.strftime('%H:%M')}) - {self.client_name} (tel. {self.client_phone})"

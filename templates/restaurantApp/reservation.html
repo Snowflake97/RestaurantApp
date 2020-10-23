@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+    <script src="{% static 'libraries/moment.js' %}"></script>
+{% endblock %}
+{% block body_block %}
+    <div class="main-window">
+
+        <div class="option-windows" align="center">
+
+            <form id="addProductToOrder" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <select name="restaurant">
+                    {% for restaurant in restaurants %}
+                        <option name="restaurant" value="{{ restaurant.id }}">{{ restaurant }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+
+                <input type="date" id="date" name="date"
+                       min="2020-01-01" max="2020-12-31">
+                {#            {{ form.as_p }}#}
+                {#            <input type="submit" value="Send message">#}
+                <br><br>
+                <input type="time" id="time_start" name="time_start"
+                       min="09:00" max="19:00" required>
+                <br><br>
+                <input type="time" id="time_end" name="time_end"
+                       min="9:00" max="20:00" required>
+                <input type="submit">
+            </form>
+        </div>
+
+
+        <div class="view-window">
+
+            {% if tables %}
+                <h1>{{ restaruant }}</h1>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Stolik</th>
+                        <th scope="col">Ilość miejsc</th>
+                        <th scope="col">Handle</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for table in tables %}
+                        <tr>
+                            <td>Stolik: {{ table.table_number }}</td>
+                            <td>{{ table.chairs_quantity }}</td>
+                            <td>
+                                {#                                <button class="reservationButton">Rezerwuj</button>#}
+                                <button type="button" class="btn btn-primary btn-lg"
+                                        onclick="location.href='{% url 'restaurantApp:client_form' id reservation_date time_start time_end table.id %}'">
+                                    Rezerwuj
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        var today = moment().format('YYYY-MM-DD');
+        $('#date').val(today);
+        $('#date').attr('min', today);
+
+        $(".reservationButton").click(function () {
+            if ($(".client-form").css("display") == "none") {
+                $(".client-form").css("display", "block")
+            } else {
+                $(".client-form").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".client-form").css("display", "none")
+        })
+    </script>
+{% endblock %}
+
