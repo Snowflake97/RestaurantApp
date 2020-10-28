@@ -96,7 +96,6 @@
               action="{% url "restaurantApp:close_order" order_detail.id %}">
             {% csrf_token %}
             <p>Wybierz formę płatności</p>
-
             <select class="payment-method" name="payment_type">
                 <option value="G">Gotówka</option>
                 <option value="K">Karta</option>
