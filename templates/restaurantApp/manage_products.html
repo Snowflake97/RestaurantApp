@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+{% endblock %}
+{% block body_block %}
+    <div class="main-window">
+
+    <div class="option-windows">
+    <div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                    Kategorie
+                </button>
+            </h5>
+        </div>
+
+        {% if type == "meals" or type == "beverages" %}
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        {% else %}
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        {% endif %}
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url "restaurantApp:get_products" "meals" %}">Posiłki</a>
+                    <a href="{% url "restaurantApp:new_product" 'P' %}"><i
+                            class="addSign fas fa-plus-circle"></i></a>
+                </li>
+                <li class="list-group-item"><a
+                        href="{% url "restaurantApp:get_products" "beverages" %}">Napoje</a>
+                    <a href="{% url "restaurantApp:new_product" 'N' %}"><i
+                            class="addSign fas fa-plus-circle"></i></a>
+                </li>
+            </ul>
+
+        </div>
+        </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                            aria-expanded="false" aria-controls="collapseTwo">
+                        Rodzaj składnika
+                    </button>
+                </h5>
+            </div>
+            {% if type == "meals" or type == "beverages" %}
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            {% else %}
+                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
+            {% endif %}
+
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item"><a
+                                href="{% url "restaurantApp:get_products" "S" %}">Ser</a>
+                        </li>
+                        <li class="list-group-item"><a
+                                href="{% url "restaurantApp:get_products" "W" %}">Warzywo</a>
+                        </li>
+                        <li class="list-group-item"><a
+                                href="{% url "restaurantApp:get_products" "M" %}">Mięso</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+        <div class="view-window">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Produkt</th>
+                    <th scope="col">Cena za sztukę</th>
+                    <th scope="col">Handle</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in data %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }} zł</td>
+
+                        <td>
+                            <button type="button" class="btn btn-primary btn-lg"
+                                    onclick="location.href='{% url 'restaurantApp:edit_product' product.id %}'">
+                                Edytuj
+                            </button>
+
+                            {#                            <a href="{% url "restaurantApp:order_add_product" %}"><i class="addSign fas fa-plus-circle"></i></a>#}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-lg"
+                                    onclick="location.href='{% url 'restaurantApp:delete_product' product.id %}'">
+                                Usuń
+                            </button>
+
+                            {#                            <a href="{% url "restaurantApp:order_add_product" %}"><i class="addSign fas fa-plus-circle"></i></a>#}
+                        </td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
+

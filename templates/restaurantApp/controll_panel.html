@@ -12,24 +12,7 @@
             <tr>
                 <td>
                     <button type="button" class="btn btn-primary btn-lg"
-                            onclick="location.href='{% url 'restaurantApp:new_order' %}'">Nowe zamówienie
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-lg"
-                            onclick="location.href='{% url 'restaurantApp:active_orders' %}'">Aktywne zamówienia
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-lg"
-                            onclick="location.href='{% url 'restaurantApp:products_group' %}'">Podgląd produktów
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="button" class="btn btn-primary btn-lg"
-                            onclick="location.href='{% url 'restaurantApp:new_product' 'U'%}'">Dodaj produkt
+                            onclick="location.href='{% url 'restaurantApp:manage_orders' %}'">Zarządzaj zamówieniami
                     </button>
                 </td>
 
@@ -40,13 +23,7 @@
                     </button>
                 </td>
 
-                <td>
-                    <button type="button" class="btn btn-primary btn-lg"
-                            onclick="location.href='{% url 'restaurantApp:products' %}'">Menu
-                    </button>
-                </td>
-            </tr>
-            <tr>
+
                 <td>
                     <button type="button" class="btn btn-warning btn-lg"
                             onclick="location.href='{% url 'restaurantApp:index' %}'">Wróć

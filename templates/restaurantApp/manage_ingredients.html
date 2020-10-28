@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock %}
+{% block body_block %}
+
+
+    <div class="main-window">
+
+        <div class="option-windows">
+
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                Składniki
+                            </button>
+                            <a href="{% url "restaurantApp:add_ingredient" %}"><i
+                                    class="addSign fas fa-plus-circle"></i></a>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="{% url "restaurantApp:manage_ingredients" "all" %}">Wszystkie</a>
+
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="{% url "restaurantApp:manage_ingredients" "S" %}">Sery</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="{% url "restaurantApp:manage_ingredients" "W" %}">Warzywa</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="{% url "restaurantApp:manage_ingredients" "M" %}">Mięsa</a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-window">
+            <div class="middle-absolute-div" align="center">
+                <label for="" class="close-btn fas fa-times"></label>
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url "restaurantApp:add_ingredient" %}">
+                    {% csrf_token %}
+                    <br><br>
+                    <label for="ingredient-name">Nazwa</label>
+                    <input type="text" name="ingredient_name">
+                    <label for="ingredient-type">Typ składnika</label>
+                    <select id="ingredient-type" name="ingredient_type">
+                        <option value="M">Mięso</option>
+                        <option value="S">Ser</option>
+                        <option value="W">Warzywo</option>
+                        <option value="N">Napój</option>
+                    </select>
+
+                    <label for="ingredient-quantity-type">Rodzaj ilości</label>
+                    <select id="ingredient-quantity-type" name="ingredient_quantity">
+                        <option value="GR">Gramy</option>
+                        <option value="SZT">Sztuki</option>
+                    </select>
+
+                    <button type="submit">Wyslij</button>
+                </form>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Produkt</th>
+                    <th scope="col">Cena za sztukę</th>
+                    <th scope="col">Handle</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ing in data %}
+                    <tr>
+                        <td>{{ ing.name }}</td>
+                        <td>{{ ing.quantity_type }}</td>
+
+                        <td>
+                            <button type="button" class="btn btn-danger btn-lg"
+                                    onclick="location.href='{% url 'restaurantApp:delete_ingredient' ing.id %}'">
+                                Usuń
+                            </button>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $("#new-ingredient").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+    </script>
+{% endblock %}

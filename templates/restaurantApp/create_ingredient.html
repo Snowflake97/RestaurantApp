@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>{{ storage }}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="name">Nazwa składnika:</label>
+            <input id="name" type="text" name="ingredient_name">
+
+            <p></p>
+
+            <label for="quantity-type">Typ liczebności:</label>
+            <select id="quantity-type" name="ingredient_quantity">
+                <option value="SZT">Sztuki</option>
+                <option value="GR">Gramy</option>
+            </select>
+
+            <p></p>
+
+            <label for="ingredient-type">Rodzaj składnika:</label>
+            <select id="ingredient-type" name="ingredient_type">
+                <option value="S">Ser</option>
+                <option value="W">Warzywo</option>
+                <option value="M">Mięso</option>
+                <option value="N">Napój</option>
+            </select>
+
+            <button type="submit">Dodaj</button>
+        </form>
+    </div>
+{% endblock %}

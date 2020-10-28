@@ -6,19 +6,24 @@
     /*transform: translate(-50%, -50%);*/
     left: 5%;
     top: 80px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .option-windows{
-    border: 1px solid red;
+    overflow: scroll;
+    /*border: 1px solid red;*/
     position: absolute;
     /*transform: translate(-50%, -50%);*/
     /*left: 20px;*/
     /*top:100px;*/
     width: 20%;
     height: 100%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 }
 .view-window{
-    border: 1px solid green;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    overflow: scroll;
+    /*border: 1px solid green;*/
     position: absolute;
     /*transform: translate(-50%, -50%);*/
     /*left: 20px;*/
@@ -47,4 +52,39 @@
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 
     /*display: block;*/
+}
+
+.table-header{
+    text-align: center;
+}
+
+.table{
+    width: 100%;
+}
+
+/*.table td,th {*/
+/*    border: 1px solid red;*/
+/*}*/
+
+.right-align{
+    text-align: right;
+}
+
+.main-window{
+    background-color: whitesmoke;
+}
+
+.li-menu{
+    width: 40px;
+    height: 30px;
+}
+
+.option-windows-panel{
+    padding-top: 10%;
+}
+.option-windows-panel input, button{
+    margin-top: 20px;
+}
+.option-windows-panel label{
+    font-weight: bold;
 }

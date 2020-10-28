@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accordion.css' %}">
+{% endblock %}
+
+
+{% block body_block %}
+    <div class="main-window">
+
+        <div class="option-windows">
+            {% block accordion_div_block %}
+
+            {% endblock %}
+        </div>
+        <div class="view-window">
+
+            {% block view_div_block %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $("#new-ingredient").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+
+    </script>
+{% endblock %}

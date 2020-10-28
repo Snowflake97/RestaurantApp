@@ -6,6 +6,19 @@ import datetime
 
 
 # Create your models here.
+# class IngredientType(models.Model):
+#     INGREDIENT_TYPES = (
+#         ('ND', 'NOT DEFINED'),
+#         ('S', 'Ser'),
+#         ('M', 'Mięso'),
+#         ('W', 'Warzywo'),
+#         ('N', 'Napój'),
+#     )
+#     ingredient_type = models.CharField(max_length=3, choices=INGREDIENT_TYPES, default='ND')
+#
+#     def __str__(self):
+#         return self.ingredient_type
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
 
@@ -14,6 +27,14 @@ class Ingredient(models.Model):
         ('SZT', 'Sztuki')
     )
     quantity_type = models.CharField(max_length=3, choices=QUANTITY_TYPES, default='GR')
+    INGREDIENT_TYPES = (
+        ('ND', 'NOT DEFINED'),
+        ('S', 'Ser'),
+        ('M', 'Mięso'),
+        ('W', 'Warzywo'),
+        ('N', 'Napój'),
+    )
+    ingredient_type = models.CharField(max_length=3, choices=INGREDIENT_TYPES, default='ND')
 
     def __str__(self):
         return f"{self.name} ({self.quantity_type})"
@@ -35,9 +56,9 @@ class Address(models.Model):
 
     def __str__(self):
         if self.house_number:
-            return f"{self.street_name} {self.street_number}/{self.house_number}"
+            return f"{self.street_name} {self.street_number}/{self.house_number} {self.zip_code} {self.city}"
         else:
-            return f"{self.street_name} {self.street_number}"
+            return f"{self.street_name} {self.street_number} {self.zip_code} {self.city}"
 
 
 class Restaurant(models.Model):
@@ -61,6 +82,20 @@ class Restaurant(models.Model):
                 orders_from_restuarant.append(order)
         return orders_from_restuarant
 
+    def get_products_from_time_period(self, date_start, date_end):
+        products_dictonary = {}
+        orders = self.get_orders_from_time_period(date_start, date_end)
+        for order in orders:
+            for product_order in ProductOrder.objects.filter(order=order):
+                product = product_order.product
+                quantity = product_order.quantity
+                if product:
+                    if products_dictonary.get(product):
+                        products_dictonary[product] += quantity
+                    else:
+                        products_dictonary = {**products_dictonary, **{product:quantity}}
+        return products_dictonary
+
     def get_ingredients_usage_from_time_period(self, date_start, date_end):
         ingredients_dictonary = {}
         orders = self.get_orders_from_time_period(date_start, date_end)
@@ -80,7 +115,7 @@ class Restaurant(models.Model):
         for order in orders:
             total_value += order.total_price
 
-        return total_value
+        return round(total_value,2)
 
 
 class Storage(models.Model):
@@ -94,6 +129,15 @@ class Storage(models.Model):
     def save(self, *args, **kwargs):
         self.quantity = round(self.quantity, 2)
         super().save(*args, **kwargs)
+
+    def add_quantity(self, quantity):
+        self.quantity += quantity
+        self.save()
+
+    def edit_quantity(self, quantity):
+        self.quantity = quantity
+        self.save()
+
 
 
 class Product(models.Model):
@@ -125,6 +169,13 @@ class Product(models.Model):
             ingredients.append((product_ingredient.ingredient))
 
         return ingredients
+
+    def is_ingredient_type_in_product(self, ingredient_type):
+        ingredients = self.get_ingredients()
+        for ingredient in ingredients:
+            if ingredient.ingredient_type == ingredient_type:
+                return True
+        return False
 
 
 class ProductIngredient(models.Model):
@@ -237,6 +288,8 @@ class Order(models.Model):
                     quantity = product_ingredient.quantity_usage
                     storage = Storage.objects.get(ingredient=ingredient, restaurant=restaurant)
                     storage.quantity -= quantity * product_order_quantity
+                    if storage.quantity < 0:
+                        storage.quantity = 0
                     storage.save()
             super().save()
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>Nowa restauracja</h1>
+        <form id="create-restaurant-form" method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="street_name">Adres</label>
+            <input id="street_name" type="text" name="street_name" required>
+            <label for="street_number">Numer domu</label>
+            <input id="street_number" type="text" name="street_number" required>
+            <label for="house_number">Numer mieszkania</label>
+            <input id="house_number" type="text" name="house_number">
+            <br>
+
+            <label for="zip_code">zip_code</label>
+            <input id="zip_code" type="text" name="zip_code" required>
+            <label for="city">city</label>
+            <input id="city" type="text" name="city" required>
+            <button class="send-restaurant-form">Przeslij</button>
+
+            <br>
+        </form>
+
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+
+    </script>
+{% endblock %}
+

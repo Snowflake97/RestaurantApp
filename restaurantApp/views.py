@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from restaurantApp.models import Product, ProductIngredient, Order, ProductOrder
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -9,6 +10,16 @@ from restaurantApp.forms import *
 from django.views.generic.edit import FormView, View
 import datetime
 import functions
+
+
+def manager_required(view_func):
+    def _wrapped_view_func(request, *args, **kwargs):
+        if request.user.employee.position != "M":
+            return HttpResponse('Nie posiadasz uprawnień')
+        else:
+            return view_func(request, *args, **kwargs)
+
+    return _wrapped_view_func
 
 
 # Create your views here.
@@ -38,39 +49,6 @@ def user_logout(request):
 
 def thx(request):
     return render(request, "restaurantApp/thx.html")
-
-
-# def register(request):
-#     registered = False
-#
-#     if request.method == "POST":
-#         user_form = UserForm(data=request.POST)
-#         profile_form = UserProfileInfoForm(data=request.POST)
-#
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user = user_form.save()
-#             user.set_password(user.password)
-#             user.save()
-#
-#             profile = profile_form.save(commit=False)
-#             profile.user = user
-#
-#             if 'profile_pic' in request.FILES:
-#                 profile.profile_pic = request.FILES['profile_pic']
-#
-#             profile.save()
-#
-#             registered = True
-#         else:
-#             print(user_form.errors, profile_form.errors)
-#     else:
-#         user_form = UserForm()
-#         profile_form = UserProfileInfoForm()
-#
-#     return render(request, 'user_app/register.html',
-#                   context={"registered": registered,
-#                            "user_form": user_form,
-#                            "profile_form": profile_form})
 
 
 def signin(request):
@@ -108,6 +86,13 @@ def controll_panel(request):
 
 
 @login_required
+@manager_required
+def manager_panel(request):
+    default_restaurant_id = request.user.employee.restaurant_id
+    return render(request, "restaurantApp/manager_panel.html", {"restaurant_id": default_restaurant_id})
+
+
+@login_required
 def new_order(request):
     current_employee = request.user.employee
     order = Order.objects.create(employee=current_employee, date=datetime.datetime.now(), total_price=0, status='A')
@@ -121,18 +106,28 @@ def active_orders(request):
     return render(request, "restaurantApp/active_orders.html", {"active_orders": active_orders})
 
 
+def manage_orders(request):
+    employee = request.user.employee
+    active_employee_orders = Order.objects.filter(employee=employee, status="A")
+    closed_employee_orders = Order.objects.filter(employee=employee, status="Z")
+    return render(request, "restaurantApp/manage_orders.html", {"active_orders":active_employee_orders, "closed_orders":closed_employee_orders})
+
+
 @login_required
 def order_detail(request, id):
     order_detail = Order.objects.get(id=id)
     products_order = ProductOrder.objects.filter(order_id=id)
-    return render(request, "restaurantApp/order_detail.html",
-                  {"order_detail": order_detail, "products_order": products_order})
+    employee = request.user.employee
+    active_employee_orders = Order.objects.filter(employee=employee, status="A")
+    closed_employee_orders = Order.objects.filter(employee=employee, status="Z")
+    return render(request, "restaurantApp/manage_orders.html",
+                  {"order_detail": order_detail, "products_order": products_order, "active_orders":active_employee_orders, "closed_orders":closed_employee_orders})
 
 
 @login_required
 def delete_order(request, id):
     Order.objects.get(id=id).delete()
-    return render(request, "restaurantApp/controll_panel.html", None)
+    return redirect("/manage_orders/")
 
 
 @login_required
@@ -149,60 +144,6 @@ def edit_product_order(request, id):
         return redirect(f'/order/{product_order.order.id}')
     else:
         return render(request, "restaurantApp/edit_product_order.html", {"product_order": product_order})
-
-
-@login_required
-def order_add_product(request, id):
-    products = Product.objects.all()
-    order = Order.objects.get(id=id)
-    if request.method == 'POST':
-        product_id = request.POST.get('product')
-        quantity = int(request.POST.get('quantity'))
-        product = Product.objects.get(id=product_id)
-        order.add_product(product, quantity)
-
-        return redirect(f'/order/{order.id}')
-
-    return render(request, "restaurantApp/order_add_product.html", {"products": products, "id": id})
-
-
-# class DateCreateView(FormView):
-#     template_name = 'restaurantApp/reservation.html'
-#     form_class = ReservationForm
-#     success_url = '/thx/'
-#
-#     def form_valid(self, form):
-#         # date = form.cleaned_data['date']
-#         # time_start = form.cleaned_data['time_start']
-#         # time_end = form.cleaned_data['time_end']
-#         # table = Table.objects.last()
-#         return super(DateCreateView, self).form_valid(form)
-#
-#     def post(self, request, *args, **kwargs):
-#         restaurant_id = request.POST.get('restaurant')
-#         date = request.POST.get('date')
-#         time_start = request.POST.get('time_start')
-#         time_start = functions.str_to_time_conversion(time_start)
-#         time_end = request.POST.get('time_end')
-#         time_end = functions.str_to_time_conversion(time_end)
-#         return redirect(f'/reservation/{restaurant_id}/{date}/{time_start}/{time_end}')
-#
-#     def get(self, request, *args, **kwargs):
-#         restaurants = Restaurant.objects.all()
-#         return render(request, "restaurantApp/reservation.html", {"restaurants": restaurants})
-
-#
-# def tables_view(request, restaurant_id, reservation_date, time_start, time_end):
-#     restaurant = Restaurant.objects.get(id=restaurant_id)
-#     reservation_date = reservation_date.date()
-#     free_tables = []
-#     tables = Table.objects.filter(restaurant_id=restaurant_id)
-#     for table in tables:
-#         if table.is_free(reservation_date, time_start, time_end):
-#             free_tables.append(table)
-#     return render(request, "restaurantApp/free_tables.html",
-#                   {"tables": free_tables, "restaruant": restaurant, "id": restaurant_id,
-#                    "reservation_date": reservation_date, "time_start": time_start, "time_end": time_end})
 
 
 def client_form(request, restaurant_id, reservation_date, time_start, time_end, table_id):
@@ -226,18 +167,49 @@ def client_form(request, restaurant_id, reservation_date, time_start, time_end, 
 
 
 def products_group(request):
+    # ingredient_types = IngredientType.objects.all()
     meals = Product.objects.filter(product_type='P')
-    return render(request, "restaurantApp/products_group.html", {"data": meals})
+    return render(request, "restaurantApp/manage_products.html", {"data": meals, "type": "meals"})
 
 
-def get_meals(request):
-    meals = Product.objects.filter(product_type='P')
-    return render(request, "restaurantApp/products_group.html", {"data": meals})
+def get_products(request, type="meals"):
+    if type == "meals":
+        meals = Product.objects.filter(product_type='P')
+        return render(request, "restaurantApp/manage_products.html",
+                      {"data": meals, "type": type})
+    elif type == "beverages":
+        beverages = Product.objects.filter(product_type='N')
+        return render(request, "restaurantApp/manage_products.html",
+                      {"data": beverages, "type": type})
+    else:
+        products = Product.objects.all()
+        products_with_ingredient_type = []
+        ingredient_type = type
+        for product in products:
+            if product.is_ingredient_type_in_product(ingredient_type):
+                products_with_ingredient_type.append(product)
+        return render(request, "restaurantApp/manage_products.html",
+                      {"data": products_with_ingredient_type, "type": type})
 
 
-def get_beverages(request):
-    beverages = Product.objects.filter(product_type='N')
-    return render(request, "restaurantApp/products_group.html", {"data": beverages})
+def order_add_product(request, id, type="meals"):
+    if type == "meals":
+        meals = Product.objects.filter(product_type='P')
+        return render(request, "restaurantApp/order_add_product.html",
+                      {"data": meals, "id": id, "type": type})
+    elif type == "beverages":
+        beverages = Product.objects.filter(product_type='N')
+        return render(request, "restaurantApp/order_add_product.html",
+                      {"data": beverages, "id": id, "type": type})
+    else:
+        products_with_ingredient_type = []
+        ingredient_type = type
+        products = Product.objects.all()
+        for product in products:
+            if product.is_ingredient_type_in_product(ingredient_type):
+                products_with_ingredient_type.append(product)
+        return render(request, "restaurantApp/order_add_product.html",
+                      {"data": products_with_ingredient_type, "id": id, "type": type})
 
 
 def reservation(request):
@@ -284,13 +256,8 @@ def new_product(request, product_type):
                                                                       quantity_usage=int(ing_quantity))
                 product_ingredient.save()
 
-        return render(request, "restaurantApp/products.html")
+        return redirect("/products_group/")
     return render(request, "restaurantApp/new_product.html", {"ingredients": ingredients, "product_type": product_type})
-
-
-def order_add_meal(request, id):
-    meals = Product.objects.filter(product_type='P')
-    return render(request, "restaurantApp/order_add_product.html", {"data": meals, "id": id})
 
 
 def order_add_beverage(request, id):
@@ -358,7 +325,276 @@ def edit_product(request, id):
         return render(request, "restaurantApp/edit_product.html",
                       {"product": product, "ingredients": ingredients})
 
+
 def delete_product(request, id):
     product = Product.objects.get(id=id)
     product.delete()
-    return redirect(f'/products_group/melas/')
+    return redirect(f'/products_group/')
+
+
+def close_order(request, id):
+    if request.method == "POST":
+        order = Order.objects.get(id=id)
+        payment_type = request.POST.get("payment_type")
+        order.close_order(payment_type)
+        # order.payment = payment_type
+        # order.save()
+
+    return redirect(f'/controll_panel/')
+
+
+def check_user(request):
+    if request.is_ajax and request.method == "GET":
+        username = request.GET.get("username", None)
+        if User.objects.filter(username=username).exists():
+            # if nick_name found return not valid new friend
+            return JsonResponse({"valid": False})
+        else:
+            # if nick_name not found, then user can create a new friend.
+            return JsonResponse({"valid": True})
+
+    return JsonResponse({})
+
+
+def create_restaurant(request):
+    if request.method == "POST":
+        street_name = request.POST.get("street_name")
+        street_number = request.POST.get("street_number")
+        house_number = request.POST.get("house_number")
+        zip_code = request.POST.get("zip_code")
+        city = request.POST.get("city")
+
+        address = Address.objects.create(street_name=street_name, street_number=street_number, city=city,
+                                         zip_code=zip_code)
+        if house_number:
+            address.house_number = house_number
+        address.save()
+
+        restaurant = Restaurant.objects.create(address=address)
+        restaurant.save()
+
+        return redirect(f'/controll_panel/')
+
+    return render(request, "restaurantApp/create_restaurant.html", {})
+
+
+def manage_ingredients(request, type="all"):
+    if type == "all":
+        ingredients = Ingredient.objects.all()
+    else:
+        ingredients = Ingredient.objects.filter(ingredient_type=type)
+    return render(request, "restaurantApp/manage_ingredients.html",
+                  {"data": ingredients})
+
+
+def add_ingredient(request):
+    if request.method == "POST":
+        ingredient_name = request.POST.get("ingredient_name")
+        ingredient_type = request.POST.get("ingredient_type")
+        ingredient_quantity = request.POST.get("ingredient_quantity")
+        ingredient = Ingredient.objects.create(name=ingredient_name, quantity_type=ingredient_quantity,
+                                               ingredient_type=ingredient_type)
+        ingredient.save()
+        return redirect('/manage_ingredients/all/')
+    return render(request, "restaurantApp/create_ingredient.html", {})
+
+
+def delete_ingredient(request, id):
+    ingredient = Ingredient.objects.get(id=id)
+    ingredient.delete()
+    return redirect('/manage_ingredients/all/')
+
+
+def manage_employees(request, id=-1):
+    restaurants = Restaurant.objects.all()
+    if id != 0:
+        restaurant = Restaurant.objects.get(id=id)
+        emplyees = Employee.objects.filter(restaurant=restaurant)
+        return render(request, "restaurantApp/manage_employees.html",
+                      {"restaurants": restaurants, "emplyees": emplyees})
+    return render(request, "restaurantApp/manage_employees.html", {"restaurants": restaurants})
+
+
+def create_user(request):
+    restuarants = Restaurant.objects.all()
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        phone_number = request.POST.get("phone_number")
+        street_name = request.POST.get("street_name")
+        street_number = request.POST.get("street_number")
+        house_number = request.POST.get("house_number")
+        zip_code = request.POST.get("zip_code")
+        city = request.POST.get("city")
+        position = request.POST.get("position")
+        restuarant_id = request.POST.get("restaurant")
+        restuarant = Restaurant.objects.get(id=restuarant_id)
+
+        user = User.objects.create(username=username, password=password)
+        user.set_password(password)
+        user.save()
+
+        address = Address.objects.create(street_name=street_name, street_number=street_number, city=city,
+                                         zip_code=zip_code)
+        if house_number:
+            address.house_number = house_number
+        address.save()
+
+        person = Person.objects.create(first_name=first_name, last_name=last_name, phone_number=phone_number,
+                                       address=address)
+        person.save()
+
+        employee = Employee.objects.create(person=person, user=user, restaurant=restuarant, position=position)
+        employee.save()
+
+        return redirect(f'/manage_employees/restaurant/0/')
+
+    return render(request, "restaurantApp/create_employee.html", {"restuarants": restuarants})
+
+
+def delete_employee(request, id):
+    employee = Employee.objects.get(id=id)
+    employee.user.delete()
+    employee.delete()
+    employee.person.address.delete()
+    employee.person.delete()
+    return redirect("/manage_employees/restaurant/0/")
+
+
+def edit_employee(request, id):
+    employee = Employee.objects.get(id=id)
+    if request.method == "POST":
+        phone_number = request.POST.get("phone_number")
+        street_name = request.POST.get("street_name")
+        street_number = request.POST.get("street_number")
+        house_number = request.POST.get("house_number")
+        zip_code = request.POST.get("zip_code")
+        city = request.POST.get("city")
+        position = request.POST.get("position")
+
+        person = employee.person
+        person.phone_number = phone_number
+        person.save()
+
+        address = person.address
+        address.street_name = street_name
+        address.street_number = street_number
+        if house_number:
+            address.house_number = house_number
+        address.zip_code = zip_code
+        address.city = city
+        address.save()
+
+        employee.position = position
+        employee.save()
+
+        return redirect("/manage_employees/restaurant/0/")
+
+    return render(request, "restaurantApp/edit_employee.html", {"employee": employee})
+
+
+def employee_set_password(request, id):
+    employee = Employee.objects.get(id=id)
+    if request.method == "POST":
+        password = request.POST.get('password')
+        employee.user.set_password(password)
+        employee.user.save()
+        employee.save()
+
+        return redirect("/manage_employees/restaurant/0/")
+
+    return render(request, "restaurantApp/set_password_employee.html", {"employee": employee})
+
+
+def manage_restaurants(request, type, id=0):
+    restaurants = Restaurant.objects.all()
+    if type == "M":
+        if id != 0:
+            restaurant = Restaurant.objects.get(id=id)
+            storage = Storage.objects.filter(restaurant=restaurant)
+            return render(request, "restaurantApp/manage_restaurants.html",
+                          {"restaurants": restaurants, "restaurant": restaurant, "storage": storage})
+    elif type == "S":
+        if id != 0:
+            restaurant = Restaurant.objects.get(id=id)
+            tables = Table.objects.filter(restaurant=restaurant)
+            return render(request, "restaurantApp/manage_restaurants.html",
+                          {"restaurants": restaurants, "restaurant": restaurant, "tables": tables})
+        pass
+
+    return render(request, "restaurantApp/manage_restaurants.html",
+                  {"restaurants": restaurants})
+
+
+def add_ingredient_to_storage(request, id):
+    storage = Storage.objects.get(id=id)
+    if request.method == "POST":
+        quantity = request.POST.get('quantity')
+        storage.add_quantity(int(quantity))
+        restaurant_id = storage.restaurant.id
+        return redirect(f"/manage_restaurants/M/{restaurant_id}/")
+    return render(request, "restaurantApp/add_ingredient_to_storage.html", {"storage": storage})
+
+
+def edit_ingredient_to_storage(request, id):
+    storage = Storage.objects.get(id=id)
+    if request.method == "POST":
+        quantity = request.POST.get('quantity')
+        storage.edit_quantity(int(quantity))
+        restaurant_id = storage.restaurant.id
+        return redirect(f"/manage_restaurants/M/{restaurant_id}/")
+    return render(request, "restaurantApp/edit_storage_ingredient.html", {"storage": storage})
+
+
+def edit_table(request, id):
+    table = Table.objects.get(id=id)
+    if request.method == "POST":
+        table_number = request.POST.get('table_number')
+        chairs_quantity = request.POST.get('chairs_quantity')
+        table.table_number = table_number
+        table.chairs_quantity = chairs_quantity
+        table.save()
+        restaurant_id = table.restaurant_id
+        return redirect(f'/manage_restaurants/S/{restaurant_id}/')
+    return render(request, "restaurantApp/edit_table.html", {"table": table})
+
+
+def delete_table(request, id):
+    table = Table.objects.get(id=id)
+    restaurant_id = table.restaurant_id
+    table.delete()
+    return redirect(f'/manage_restaurants/S/{restaurant_id}/')
+
+
+def add_table(request):
+    restaurants = Restaurant.objects.all()
+    if request.method == "POST":
+        table_number = int(request.POST.get('table_number'))
+        chairs_quantity = int(request.POST.get('chairs_quantity'))
+        restaurant_id = int(request.POST.get('restaurant'))
+        table = Table.objects.create(restaurant_id=restaurant_id, table_number=table_number,
+                                     chairs_quantity=chairs_quantity)
+        table.save()
+        return redirect(f'/manage_restaurants/S/{restaurant_id}/')
+    return render(request, "restaurantApp/create_table.html", {"restaurants": restaurants})
+
+
+def raports(request):
+    restaurants = Restaurant.objects.all()
+    if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        restaurant_id = request.POST.get('restaurant')
+        restaurant = Restaurant.objects.get(id=restaurant_id)
+        products = restaurant.get_products_from_time_period(start_date, end_date)
+        ingredients = restaurant.get_ingredients_usage_from_time_period(start_date, end_date)
+        income = restaurant.get_income_from_time_period(start_date, end_date)
+        print(products)
+        print(ingredients)
+        print(start_date)
+        return render(request, "restaurantApp/raports.html",
+                      {"restaurants": restaurants, "products": products, "ingredients": ingredients, "income": income})
+    return render(request, "restaurantApp/raports.html", {"restaurants": restaurants})
+

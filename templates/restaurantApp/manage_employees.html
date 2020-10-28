@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+{% extends "restaurantApp/manage_template.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accordion.css' %}">
+{% endblock %}
+
+
+{% block accordion_div_block %}
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                        Pracownicy
+                    </button>
+                    <a href="{% url "restaurantApp:create_user" %}"><i
+                            class="addSign fas fa-plus-circle"></i></a>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for restuarant in restaurants %}
+                            <li class="list-group-item">
+                                <a href="{% url "restaurantApp:manage_employees" restuarant.id %}">{{ restuarant }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block view_div_block %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Osoba</th>
+            <th scope="col">Użytkownik</th>
+            <th scope="col">Stanowisko</th>
+            <th scope="col">Adres</th>
+            <th scope="col">Telefon</th>
+            <th scope="col">Handle</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for employee in emplyees %}
+            <tr>
+
+                <td>{{ employee.person }}</td>
+                <td>{{ employee.user }}</td>
+                {% if employee.position == "W" %}
+                    <td>Pracownik</td>
+                {% elif employee.position == "M" %}
+                    <td>Manager</td>
+                {% else %}
+                    <td>TODO</td>
+                {% endif %}
+                <td>{{ employee.person.address }}</td>
+                <td>{{ employee.person.phone_number }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            Opcje
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url "restaurantApp:edit_employee" employee.id %}">Edytuj
+                                pracownika</a>
+                            <a class="dropdown-item"
+                               href="{% url "restaurantApp:employee_set_password" employee.id %}">Ustaw nowe
+                                hasło</a>
+                            <a class="dropdown-item"
+                               href="{% url "restaurantApp:delete_employee" employee.id %}">Usuń pracownika</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $("#new-ingredient").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+
+    </script>
+{% endblock %}

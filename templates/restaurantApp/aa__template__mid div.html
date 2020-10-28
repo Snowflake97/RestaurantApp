@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="middle-absolute-div" align="center">
+        <label for="" class="close-btn fas fa-times"></label>
+
+
+            <button type="submit">Wyslij</button>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(".close-order-button").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+    </script>
+{% endblock %}

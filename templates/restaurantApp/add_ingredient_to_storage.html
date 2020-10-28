@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>{{ storage }}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="increment-ingredient">Wartość dodawana do magazynu</label>
+            <input type="number" name="quantity">
+            <button type="submit">Dodaj</button>
+        </form>
+    </div>
+{% endblock %}

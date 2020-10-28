@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+{% extends "restaurantApp/manage_template.html" %}
+{% load static %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accordion.css' %}">
+{% endblock %}
+
+
+{% block accordion_div_block %}
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                        Aktywne zamówienia
+                    </button>
+                    <a href="{% url "restaurantApp:new_order" %}"><i
+                            class="addSign fas fa-plus-circle"></i></a>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for order in active_orders %}
+                            <li class="list-group-item">
+                                <table width="100%">
+                                    <tr>
+                                        <td>
+                                            <a href="{% url "restaurantApp:order_detail" order.id %}">{{ order }}</a>
+                                        </td>
+
+                                        <td class="right-align">
+                                            <div class="btn-group li-menu">
+                                                <button type="button" class="btn btn-primary dropdown-toggle"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item"
+                                                       href="{% url "restaurantApp:order_add_product" order.id "meals" %}">Dodaj
+                                                        produkt</a>
+                                                    <a class="dropdown-item close-order-button">Zamknij</a>
+                                                    <a class="dropdown-item"
+                                                       href="{% url "restaurantApp:delete_order" order.id %}">Usuń
+                                                        zamówienie</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo"
+                            aria-expanded="true" aria-controls="collapseTwo">
+                        Zamknięte zamówienia
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for order in closed_orders %}
+                            <li class="list-group-item">
+                                <a href="{% url "restaurantApp:order_detail" order.id %}">{{ order }}</a>
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block view_div_block %}
+    {% if order_detail %}
+    <div class="middle-absolute-div" align="center">
+        <label for="" class="close-btn fas fa-times"></label>
+        <form method="post" enctype="multipart/form-data"
+              action="{% url "restaurantApp:close_order" order_detail.id %}">
+            {% csrf_token %}
+            <p>Wybierz formę płatności</p>
+
+            <select class="payment-method" name="payment_type">
+                <option value="G">Gotówka</option>
+                <option value="K">Karta</option>
+            </select>
+            <br>
+            <button type="submit">Wyslij</button>
+        </form>
+    </div>
+    {% endif %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Ilość</th>
+            <th scope="col">Produkt</th>
+            <th scope="col">Cena za produkt</th>
+            {% if order_detail.status == "A" %}
+                <th class="right-align" scope="col">Opcje</th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for product in products_order %}
+            <tr>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.product.name }}</td>
+                <td>{{ product.product.price }} zł</td>
+                {% if order_detail.status == "A" %}
+
+                    <td class="right-align">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url "restaurantApp:edit_product_order" product.id %}">Edytuj
+                                ilość</a>
+                        </div>
+                    </div>
+
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        $(".close-order-button").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+    </script>
+{% endblock %}

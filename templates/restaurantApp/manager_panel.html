@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <table class="center">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:manage_employees' 0 %}'">Zarządzaj
+                        pracownikami
+                    </button>
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:manage_restaurants' "M" restaurant_id %}'">
+                        Zarządzaj restauracjami
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:products_group' %}'">Zarządzaj
+                        produktami
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url "restaurantApp:manage_ingredients" "all" %}'">Zarządzaj
+                        składnikami
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url "restaurantApp:raports" %}'">Raporty
+
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-warning btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:index' %}'">Wróć
+                    </button>
+                </td>
+
+
+            </tr>
+
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% extends "restaurantApp/base.html" %}
+{% load static %}
+
+{% block css_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
+{% endblock css_block %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <form id="create-user-form" method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="username">Nazwa użytkownika</label>
+            <input id="username" type="text" name="username" required>
+            <br>
+            <label for="password">Hasło</label>
+            <input id="password" type="password" name="password" required>
+            <br>
+
+            <label for="first_name">Imie</label>
+            <input id="first_name" type="text" name="first_name" required>
+            <br>
+
+            <label for="last_name">Nazwisko</label>
+            <input id="last_name" type="text" name="last_name" required>
+            <br>
+
+            <label for="phone_number">Telefon</label>
+            <input id="phone_number" type="text" name="phone_number" required>
+            <br>
+
+            <label for="street_name">Adres</label>
+            <input id="street_name" type="text" name="street_name" required>
+            <label for="street_number">Numer domu</label>
+            <input id="street_number" type="text" name="street_number" required>
+            <label for="house_number">Numer mieszkania</label>
+            <input id="house_number" type="text" name="house_number">
+            <br>
+
+            <label for="zip_code">zip_code</label>
+            <input id="zip_code" type="text" name="zip_code" required>
+            <label for="city">city</label>
+            <input id="city" type="text" name="city" required>
+            <br>
+            <label for="position">Pozycja</label>
+            <select id="position" name="position">
+                <option value="W">Pracownik</option>
+                <option value="M">Manager</option>
+            </select>
+            <br>
+            <label for="restaurant">Restauracja</label>
+            <select id="restaurant" name="restaurant">
+            {% for restaurant in restuarants %}
+                <option value="{{ restaurant.id }}"> {{ restaurant }}</option>
+                {% endfor %}
+            </select>
+        </form>
+            <button class="send-user-form">Przeslij</button>
+
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        var user_form = $( "#create-user-form" );
+
+        $(".send-user-form").click(function () {
+
+            var username = $("#username").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'restaurantApp:check_user' %}",
+                data: {"username": username},
+                success: function (response) {
+                    if (!response["valid"]) {
+                        alert("Wybrana nazwa użytkownika jest zajęta");
+                    }
+                    else{
+                        if(user_form.valid() == true){
+                            $( "#create-user-form" ).submit();
+                            alert("Pomyślnie stworzono użytkownika")
+                        }
+                        else{
+                            alert("Wypełnij wymagane pola");
+                        }
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+             })
+        })
+    </script>
+{% endblock %}
+

@@ -7,6 +7,21 @@
 {% endblock css_block %}
 
 {% block body_block %}
+    <div class="middle-absolute-div" align="center">
+    <label for="" class="close-btn fas fa-times"></label>
+        <form method="post" enctype="multipart/form-data"
+              action="{% url "restaurantApp:close_order" order_detail.id %}">
+            {% csrf_token %}
+            <p>Wybierz formę płatności</p>
+
+            <select class="payment-method" name="payment_type">
+                <option value="G">Gotówka</option>
+                <option value="K">Karta</option>
+            </select>
+            <br>
+            <button type="submit">Wyslij</button>
+        </form>
+    </div>
     <div class="jumbotron">
         <table class="table">
             <thead>
@@ -38,10 +53,17 @@
         </table>
         <p> {{ order_detail.date }}</p>
         <p> {{ order_detail.employee }}</p>
+        <p> {{ order_detail.status }}</p>
         <table class="center">
             <tr>
                 <td>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{% url 'restaurantApp:order_add_meal' order_detail.id %}'">Dodaj produkt do zamówienia
+                    <button type="button" class="btn btn-primary btn-lg"
+                            onclick="location.href='{% url 'restaurantApp:order_add_product' order_detail.id "meals" %}'">Dodaj
+                        produkt do zamówienia
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="close-order-button btn btn-primary btn-lg">Zamknij zamówienie
                     </button>
                 </td>
                 <td>
@@ -53,4 +75,19 @@
             </tr>
         </table>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(".close-order-button").click(function () {
+            if ($(".middle-absolute-div").css("display") == "none") {
+                $(".middle-absolute-div").css("display", "block")
+            } else {
+                $(".middle-absolute-div").css("display", "none")
+            }
+        })
+        $(".close-btn").click(function () {
+            $(".middle-absolute-div").css("display", "none")
+        })
+    </script>
 {% endblock %}

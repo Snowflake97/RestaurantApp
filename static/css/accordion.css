@@ -1,0 +1,23 @@
+#accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  width: 100%;
+  /*text-align: left;*/
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+.card-header{
+    background-color: lightgoldenrodyellow;
+    text-align: left;
+}
+
+.card .addSign{
+    position: absolute;
+    /*padding-top: 10p0x;*/
+    right: 10px;
+    top: 20px;
+}
+

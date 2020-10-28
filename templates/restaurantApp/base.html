@@ -37,19 +37,15 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url "restaurantApp:reservation" %}">Rezerwuj stolik</a>
             </li>
-            {#            {% if user.is_authenticated %}#}
-            {#                <li class="nav-item">#}
-            {#                    <a class="nav-link" href="{% url "restaurantApp:logout" %}">Logout</a>#}
-            {#                </li>#}
-            {#            {% else %}#}
-            {#                <li class="nav-item">#}
-            {#                    <a class="nav-link" href="{% url "restaurantApp:signin" %}">Login</a>#}
-            {#                </li>#}
-            {#            {% endif %}#}
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "restaurantApp:controll_panel" %}">Controll panel</a>
                 </li>
+                {% if user.employee.position == "M" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "restaurantApp:manager_panel" %}">Manager panel</a>
+                    </li>
+                {% endif %}
             {% endif %}
 
         </ul>
