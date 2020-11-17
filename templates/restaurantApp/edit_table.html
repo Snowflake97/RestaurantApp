@@ -4,20 +4,37 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 {% endblock css_block %}
+
 
 {% block body_block %}
     <div class="jumbotron">
-        <h1>{{ table }}</h1>
-        <form id="editProductOrderForm" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for id="table-number">Numer stolika: </label>
-            <input id="table-number" name="table_number" type="number" value="{{ table.table_number }}" min="1">
+        <h1 align="center">{{ table }}</h1>
+        <div class="form-default">
+            <form id="editProductOrderForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <label for id="chairs-quantity">Ilość miejsc: </label>
-            <input id="chairs-quantity" name="chairs_quantity" type="number" value="{{ table.chairs_quantity }}" min="1">
-            <button type="submit" class="btn btn-primary btn-lg"> Zapisz
-            </button>
-        </form>
+                <div class="form-group row">
+                    <label for id="table-number" class="col-sm-2 col-form-label">Numer stolika: </label>
+
+                    <div class="col-sm-10">
+                        <input class="form-control" id="table-number" name="table_number" type="number"
+                               value="{{ table.table_number }}" min="1">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for id="chairs-quantity" class="col-sm-2 col-form-label">Ilość miejsc: </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="chairs-quantity" name="chairs_quantity" type="number"
+                               value="{{ table.chairs_quantity }}"
+                               min="1">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg"> Zapisz
+                </button>
+            </form>
+        </div>
     </div>
 {% endblock %}

@@ -34,7 +34,6 @@ register_converter(TimeConverter, 'time')
 urlpatterns = [
     path("", views.index, name="index"),
     path("products/", views.product_list, name="products"),
-    # path('register/', views.register, name="register"),
     path('signin/', views.signin, name="signin"),
     path('logout/', views.user_logout, name="logout"),
     path('thx/', views.thx, name="thx"),
@@ -58,8 +57,10 @@ urlpatterns = [
     path('manage_employees/set_password/<int:id>/', views.employee_set_password, name="employee_set_password"),
 
     path('manage_restaurants/<str:type>/<int:id>/', views.manage_restaurants, name="manage_restaurants"),
-    path('manage_restaurants/restaurant/add_ingredient_to_storage/<int:id>/', views.add_ingredient_to_storage, name="add_ingredient_to_storage"),
-    path('manage_restaurants/restaurant/edit_ingredient_to_storage/<int:id>/', views.edit_ingredient_to_storage, name="edit_ingredient_to_storage"),
+    path('manage_restaurants/restaurant/add_ingredient_to_storage/<int:id>/', views.add_ingredient_to_storage,
+         name="add_ingredient_to_storage"),
+    path('manage_restaurants/restaurant/edit_ingredient_to_storage/<int:id>/', views.edit_ingredient_to_storage,
+         name="edit_ingredient_to_storage"),
 
     path('manage_orders/', views.manage_orders, name="manage_orders"),
 
@@ -84,9 +85,7 @@ urlpatterns = [
 
     path('order/<int:id>/add_product/<int:product_id>', views.order_id_add_product_id,
          name='order_id_add_product_id'),
-    # path('reservation/', views.DateCreateView.as_view(), name='reservation'),
-    # path('reservation/<int:restaurant_id>/<year:reservation_date>/<time:time_start>/<time:time_end>/',
-    #      views.tables_view, name='tables_view'),
+
     path('reservation/<int:restaurant_id>/<year:reservation_date>/<time:time_start>/<time:time_end>/<int:table_id>/',
          views.client_form, name='client_form'),
     path('reservation/', views.reservation, name='reservation'),

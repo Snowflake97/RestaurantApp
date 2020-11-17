@@ -4,6 +4,7 @@
 {% block css_block %}
     <link rel="stylesheet" href="{% static 'css/products_group.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accordion.css' %}">
 {% endblock %}
 {% block body_block %}
 
@@ -78,8 +79,8 @@
                 <thead>
                 <tr>
                     <th scope="col">Produkt</th>
-                    <th scope="col">Cena za sztukę</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Typ ilości</th>
+                    <th class="right-align" scope="col">Opcje</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -88,13 +89,18 @@
                         <td>{{ ing.name }}</td>
                         <td>{{ ing.quantity_type }}</td>
 
-                        <td>
-                            <button type="button" class="btn btn-danger btn-lg"
-                                    onclick="location.href='{% url 'restaurantApp:delete_ingredient' ing.id %}'">
-                                Usuń
-                            </button>
-
+                        <td class="right-align">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url "restaurantApp:delete_ingredient" ing.id %}">Usuń
+                                        składnik</a>
+                                </div>
+                            </div>
                         </td>
+
                     </tr>
                     </tbody>
                 {% endfor %}

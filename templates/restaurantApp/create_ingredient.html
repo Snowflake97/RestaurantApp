@@ -4,35 +4,50 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 {% endblock css_block %}
 
 {% block body_block %}
     <div class="jumbotron">
         <h1>{{ storage }}</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="name">Nazwa składnika:</label>
-            <input id="name" type="text" name="ingredient_name">
+        <div class="form-default">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="name" class="col-sm-2 col-form-label">Nazwa składnika:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="name" type="text" name="ingredient_name">
+                    </div>
+                </div>
 
-            <p></p>
 
-            <label for="quantity-type">Typ liczebności:</label>
-            <select id="quantity-type" name="ingredient_quantity">
-                <option value="SZT">Sztuki</option>
-                <option value="GR">Gramy</option>
-            </select>
+                <div class="form-group row">
+                    <label for="quantity-type" class="col-sm-2 col-form-label">Typ liczebności:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="quantity-type" name="ingredient_quantity">
+                            <option value="SZT">Sztuki</option>
+                            <option value="GR">Gramy</option>
+                        </select>
+                    </div>
+                </div>
 
-            <p></p>
 
-            <label for="ingredient-type">Rodzaj składnika:</label>
-            <select id="ingredient-type" name="ingredient_type">
-                <option value="S">Ser</option>
-                <option value="W">Warzywo</option>
-                <option value="M">Mięso</option>
-                <option value="N">Napój</option>
-            </select>
+                <div class="form-group row">
+                    <label for="ingredient-type" class="col-sm-2 col-form-label">Rodzaj składnika:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="ingredient-type" name="ingredient_type">
+                            <option value="S">Ser</option>
+                            <option value="W">Warzywo</option>
+                            <option value="M">Mięso</option>
+                            <option value="N">Napój</option>
+                        </select>
+                    </div>
+                </div>
 
-            <button type="submit">Dodaj</button>
+
+                <button class="btn btn-primary btn-lg" type="submit">Dodaj</button>
+        </div>
         </form>
+    </div>
     </div>
 {% endblock %}

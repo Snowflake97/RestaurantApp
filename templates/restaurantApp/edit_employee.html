@@ -4,53 +4,95 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
 {% endblock css_block %}
 
 {% block body_block %}
     <div class="jumbotron">
-        <h1>{{ employee }}</h1>
-        <form id="create-user-form" method="post" action="" enctype="multipart/form-data">
-            {% csrf_token %}
+        <h1 align="center">Edytuj: {{ employee }}</h1>
+        <p></p>
+        <div class="form-default">
+            <form id="create-user-form" method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <label for="phone_number">Telefon</label>
-            <input id="phone_number" type="text" name="phone_number" required
-                   value="{{ employee.person.phone_number }}">
-            <br>
+                <div class="form-group row">
+                    <label for="phone_number" class="col-sm-2 col-form-label">Telefon:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="phone_number" type="text" name="phone_number" required
+                               value="{{ employee.person.phone_number }}">
+                    </div>
+                </div>
 
-            <label for="street_name">Adres</label>
-            <input id="street_name" type="text" name="street_name" required
-                   value="{{ employee.person.address.street_name }}">
-            <label for="street_number">Numer domu</label>
-            <input id="street_number" type="text" name="street_number" required
-                   value="{{ employee.person.address.street_number }}">
-            <label for="house_number">Numer mieszkania</label>
-            {% if employee.person.address.house_number %}
-                <input id="house_number" type="text" name="house_number"
-                       value="{{ employee.person.address.house_number }}">
-            {% else %}
-                <input id="house_number" type="text" name="house_number">
-            {% endif %}
-            <br>
 
-            <label for="zip_code">zip_code</label>
-            <input id="zip_code" type="text" name="zip_code" required value="{{ employee.person.address.zip_code }}">
-            <label for="city">city</label>
-            <input id="city" type="text" name="city" required value="{{ employee.person.address.city }}">
-            <br>
-            <label for="position">Pozycja</label>
-            <select id="position" name="position">
-                {% if employee.position == "W" %}
-                    <option selected value="W">Pracownik</option>
-                    <option value="M">Manager</option>
-                {% elif employee.position == "M" %}
-                    <option value="W">Pracownik</option>
-                    <option selected value="M">Manager</option>
-                {% endif %}
-            </select>
-            <br>
-            <button class="send-user-form">Przeslij</button>
-        </form>
+                <div class="form-group row">
+                    <label for="street_name" class="col-sm-2 col-form-label">Adres:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="street_name" type="text" name="street_name" required
+                               value="{{ employee.person.address.street_name }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="street_number" class="col-sm-2 col-form-label">Numer domu:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="street_number" type="text" name="street_number" required
+                               value="{{ employee.person.address.street_number }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="house_number" class="col-sm-2 col-form-label">Numer mieszkania:</label>
+                    <div class="col-sm-10">
+                        {% if employee.person.address.house_number %}
+                            <input class="form-control" id="house_number" type="text" name="house_number"
+                                   value="{{ employee.person.address.house_number }}">
+                        {% else %}
+                            <input class="form-control" id="house_number" type="text" name="house_number">
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="zip_code" class="col-sm-2 col-form-label">Kod pocztowy:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="zip_code" type="text" name="zip_code" required
+                               value="{{ employee.person.address.zip_code }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="city" class="col-sm-2 col-form-label">Miasto:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="city" type="text" name="city" required
+                               value="{{ employee.person.address.city }}">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="position" class="col-sm-2 col-form-label">Pozycja:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="position" name="position">
+                            {% if employee.position == "W" %}
+                                <option selected value="W">Pracownik</option>
+                                <option value="M">Manager</option>
+                            {% elif employee.position == "M" %}
+                                <option value="W">Pracownik</option>
+                                <option selected value="M">Manager</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+
+                <br>
+                <button class="send-user-form btn btn-primary btn-lg">Przeslij</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 

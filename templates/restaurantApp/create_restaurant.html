@@ -4,31 +4,48 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
 {% endblock css_block %}
 
 {% block body_block %}
     <div class="jumbotron">
-        <h1>Nowa restauracja</h1>
-        <form id="create-restaurant-form" method="post" action="" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="street_name">Adres</label>
-            <input id="street_name" type="text" name="street_name" required>
-            <label for="street_number">Numer domu</label>
-            <input id="street_number" type="text" name="street_number" required>
-            <label for="house_number">Numer mieszkania</label>
-            <input id="house_number" type="text" name="house_number">
-            <br>
+        <h1 align="center">Nowa restauracja</h1>
+        <div class="form-default">
+            <form id="create-restaurant-form" method="post" action="" enctype="multipart/form-data">
+                <div class="form-group row">
+                    {% csrf_token %}
+                    <label for="street_name" class="col-sm-2 col-form-label">Adres</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" class="form-control" id="street_name" type="text" name="street_name" required>
+                    </div>
 
-            <label for="zip_code">zip_code</label>
-            <input id="zip_code" type="text" name="zip_code" required>
-            <label for="city">city</label>
-            <input id="city" type="text" name="city" required>
-            <button class="send-restaurant-form">Przeslij</button>
+                    <label for="street_number" class="col-sm-2 col-form-label">Numer domu</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="street_number" type="text" name="street_number" required>
+                    </div>
 
-            <br>
-        </form>
+                    <label for="house_number" class="col-sm-2 col-form-label">Numer mieszkania</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="house_number" type="text" name="house_number">
+                    </div>
 
+
+                    <label for="zip_code" class="col-sm-2 col-form-label">Kod pocztowy</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="zip_code" type="text" name="zip_code" required>
+                    </div>
+
+                    <label for="city" class="col-sm-2 col-form-label">Miasto</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="city" type="text" name="city" required>
+                    </div>
+
+                    <button class="send-restaurant-form btn btn-primary btn-lg">Prześlij</button>
+                </div>
+            </form>
+        </div>
+    </div>
     </div>
 {% endblock %}
 {% block script %}

@@ -4,16 +4,26 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 {% endblock css_block %}
 
 {% block body_block %}
     <div class="jumbotron">
         <h1>{{ storage }}</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="increment-ingredient">Wartość dodawana do magazynu</label>
-            <input type="number" name="quantity">
-            <button type="submit">Dodaj</button>
-        </form>
+        <div class="form-default">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group row">
+                    <label for="increment-ingredient" class="col-sm-4 col-form-label">Wartość dodawana do
+                        magazynu:</label>
+                    <div class="col-sm-8">
+                        <input id="increment-ingredient" class="form-control" type="number" name="quantity">
+                    </div>
+                </div>
+
+                <input class="form-control btn btn-primary btn-lg" type="submit">
+            </form>
+        </div>
     </div>
 {% endblock %}

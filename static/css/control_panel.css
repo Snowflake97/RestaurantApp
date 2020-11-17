@@ -1,9 +1,6 @@
 .center td {
-    /*border: 1px solid black;*/
     width: 200px;
     height: 200px;
-    /*padding-left: 10px;*/
-    /*padding-top: 10px;*/
 }
 
 td .btn {
@@ -11,32 +8,21 @@ td .btn {
     width: inherit;
     height: 90%;
     width: 90%;
-    /*position: center;*/
     display: block;
     margin: auto;
 }
 
-.blue {
-    background: blue;
-}
-
-.red {
-    background: red;
-}
-
-.container {
-    padding-top: 1%;
-}
+/*.container {*/
+/*    padding-top: 1%;*/
+/*}*/
 
 table {
     position: center;
 }
 
-.jumbotron {
-    padding-top: 10px;
-    background: white;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
+
+.transparent {
+    background: transparent;
 }
 
 .buttons {
@@ -70,3 +56,12 @@ table {
 .middle-absolute-div p {
     margin-top: 5%;
 }
+
+.middle-absolute-div p {
+    margin-top: 5%;
+}
+
+.control-panel{
+    margin-top: 10%;
+}
+

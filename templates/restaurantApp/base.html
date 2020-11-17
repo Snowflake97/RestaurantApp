@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Projekt Zespołowy</title>
+    <title>Projekt dyplomowa</title>
     <link rel="stylesheet" href="{% static 'libraries/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
@@ -19,7 +19,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url "restaurantApp:index" %}">DJANGO</a>
+    <a class="navbar-brand" href="{% url "restaurantApp:index" %}">Praca dyplomowa</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,23 +27,22 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url "admin:index" %}">Admin <span class="sr-only">(current)</span></a>
-            </li>
+            {% if user.employee.position == "M" %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url "admin:index" %}">Admin<span class="sr-only">(current)</span></a>
+                </li>
+            {% endif %}
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{% url "restaurantApp:products" %}">Menu</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url "restaurantApp:reservation" %}">Rezerwuj stolik</a>
-            </li>
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "restaurantApp:controll_panel" %}">Controll panel</a>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url "restaurantApp:controll_panel" %}">Panel pracowniczy</a>
                 </li>
                 {% if user.employee.position == "M" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url "restaurantApp:manager_panel" %}">Manager panel</a>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url "restaurantApp:manager_panel" %}">Panel menadżerski</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -52,10 +51,10 @@
         <form class="form-inline my-2 my-lg-0">
             {% if user.is_authenticated %}
                 <button class="btn btn-outline-success my-2 my-sm-0" type="button"
-                        onclick="location.href='{% url "restaurantApp:logout" %}'">Logout
+                        onclick="location.href='{% url "restaurantApp:logout" %}'">Wyloguj się
                 </button>
             {% else %}
-                <button class="loginButton btn btn-outline-success my-2 my-sm-0" type="button">Login</button>
+                <button class="loginButton btn btn-outline-success my-2 my-sm-0" type="button">Zaloguj się</button>
             {% endif %}
         </form>
 
@@ -69,22 +68,22 @@
             <form class="form-signin" method="post" action="{% url "restaurantApp:signin" %}">
                 {% csrf_token %}
                 <label for="" class="close-btn fas fa-times"></label>
-                <img class="mb-4" src="{% static "imgs/apple-touch-icon.png" %}" alt="" width="72" height="72">
-                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <img class="mb-4" src="{% static "img/logo2.png" %}" alt="" width="100" height="72">
+                <h1 class="h3 mb-3 font-weight-normal">Wprowadź dane</h1>
                 <label for="username" class="sr-only">User name</label>
-                <input type="text" name="username" id="username" class="form-control" placeholder="User name" required
+                <input type="text" name="username" id="username" class="form-control" placeholder="Login" required
                        autofocus>
                 <label for="password" class="sr-only">Password</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Password"
+                <input type="password" name="password" id="password" class="form-control" placeholder="Hasło"
                        required>
                 <div class="checkbox mb-3">
                     <label>
                         <input id="remember_me" type="checkbox" name="remember_me" id="remember_me" value="remember">
-                        Remember me
+                        Zapamiętaj mnie
                     </label>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj się</button>
+                <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
             </form>
         </div>
     {% endif %}

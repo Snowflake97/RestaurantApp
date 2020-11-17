@@ -7,7 +7,11 @@ import django
 django.setup()
 
 from django.contrib.auth import authenticate
-from Server import Server
+from Server import *
+from restaurantApp.models import *
 
 server = Server()
 
+# server.current_employee = Employee.objects.get(user__username="adi")
+
+# server.raports()

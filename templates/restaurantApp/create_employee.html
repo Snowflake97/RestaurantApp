@@ -4,65 +4,119 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/control_panel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
 {% endblock css_block %}
 
 {% block body_block %}
     <div class="jumbotron">
-        <form id="create-user-form" method="post" action="" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="username">Nazwa użytkownika</label>
-            <input id="username" type="text" name="username" required>
-            <br>
-            <label for="password">Hasło</label>
-            <input id="password" type="password" name="password" required>
-            <br>
+        <div class="form-default">
+            <form id="create-user-form" method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="username" class="col-sm-2 col-form-label">Nazwa użytkownika</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="username" type="text" name="username" required>
+                    </div>
 
-            <label for="first_name">Imie</label>
-            <input id="first_name" type="text" name="first_name" required>
-            <br>
+                </div>
+                <div class="form-group row">
+                    <label for="password" class="col-sm-2 col-form-label">Hasło</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="password" type="password" name="password" required>
 
-            <label for="last_name">Nazwisko</label>
-            <input id="last_name" type="text" name="last_name" required>
-            <br>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="first_name" class="col-sm-2 col-form-label">Imie</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="first_name" type="text" name="first_name" required>
+                    </div>
 
-            <label for="phone_number">Telefon</label>
-            <input id="phone_number" type="text" name="phone_number" required>
-            <br>
+                </div>
 
-            <label for="street_name">Adres</label>
-            <input id="street_name" type="text" name="street_name" required>
-            <label for="street_number">Numer domu</label>
-            <input id="street_number" type="text" name="street_number" required>
-            <label for="house_number">Numer mieszkania</label>
-            <input id="house_number" type="text" name="house_number">
-            <br>
+                <div class="form-group row">
+                    <label for="last_name" class="col-sm-2 col-form-label">Nazwisko</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="last_name" type="text" name="last_name" required>
+                    </div>
 
-            <label for="zip_code">zip_code</label>
-            <input id="zip_code" type="text" name="zip_code" required>
-            <label for="city">city</label>
-            <input id="city" type="text" name="city" required>
-            <br>
-            <label for="position">Pozycja</label>
-            <select id="position" name="position">
-                <option value="W">Pracownik</option>
-                <option value="M">Manager</option>
-            </select>
-            <br>
-            <label for="restaurant">Restauracja</label>
-            <select id="restaurant" name="restaurant">
-            {% for restaurant in restuarants %}
-                <option value="{{ restaurant.id }}"> {{ restaurant }}</option>
-                {% endfor %}
-            </select>
-        </form>
-            <button class="send-user-form">Przeslij</button>
+                </div>
 
+                <div class="form-group row">
+                    <label for="phone_number" class="col-sm-2 col-form-label">Telefon</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="phone_number" type="text" name="phone_number" required>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="street_name" class="col-sm-2 col-form-label">Adres</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="street_name" type="text" name="street_name" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+
+                    <label for="street_number" class="col-sm-2 col-form-label">Numer domu</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="street_number" type="text"
+                               name="street_number" required>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="house_number" class="col-sm-2 col-form-label">Numer mieszkania</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="house_number" type="text" name="house_number">
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="zip_code" class="col-sm-2 col-form-label">zip_code</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="zip_code" type="text" name="zip_code" required>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="city" class="col-sm-2 col-form-label">city</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="city" type="text" name="city" required>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="position" class="col-sm-2 col-form-label">Pozycja</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="position" name="position">
+                            <option value="W">Pracownik</option>
+                            <option value="M">Manager</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="restaurant" class="col-sm-2 col-form-label">Restauracja</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="restaurant" name="restaurant">
+                            {% for restaurant in restuarants %}
+                                <option value="{{ restaurant.id }}"> {{ restaurant }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="send-user-form btn btn-primary btn-lg">Przeslij</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 {% block script %}
     <script>
-        var user_form = $( "#create-user-form" );
+        var user_form = $("#create-user-form");
 
         $(".send-user-form").click(function () {
 
@@ -74,13 +128,11 @@
                 success: function (response) {
                     if (!response["valid"]) {
                         alert("Wybrana nazwa użytkownika jest zajęta");
-                    }
-                    else{
-                        if(user_form.valid() == true){
-                            $( "#create-user-form" ).submit();
+                    } else {
+                        if (user_form.valid() == true) {
+                            $("#create-user-form").submit();
                             alert("Pomyślnie stworzono użytkownika")
-                        }
-                        else{
+                        } else {
                             alert("Wypełnij wymagane pola");
                         }
                     }
@@ -88,7 +140,7 @@
                 error: function (response) {
                     console.log(response)
                 }
-             })
+            })
         })
     </script>
 {% endblock %}

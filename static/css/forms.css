@@ -1,0 +1,16 @@
+
+.form-default{
+    margin-left: 10%;
+    text-align: left;
+    width: 80%;
+}
+
+.form-default button{
+    margin-top: 10px;
+    margin-left: 25%;
+    width: 50%;
+}
+
+.form-default input{
+    margin-top: 5px;
+}

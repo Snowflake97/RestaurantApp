@@ -3,9 +3,8 @@
     position: absolute;
     right: 5%;
     height: 80%;
-    /*transform: translate(-50%, -50%);*/
     left: 5%;
-    top: 80px;
+    top: 10%;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -15,18 +14,18 @@
     width: 25%;
     height: 100%;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    background: lightgray;
 }
 .view-window{
+    /*background: lightgray;*/
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     overflow: scroll;
-    /*border: 1px solid green;*/
     position: absolute;
-    /*transform: translate(-50%, -50%);*/
-    /*left: 20px;*/
     right: 0px;
     width: 75%;
     height: 100%;
 }
+
 .card-body{
     padding: 0px 0px 0px 0px;
 }
@@ -46,8 +45,6 @@
     width: 20%;
     background: white;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
-
-    /*display: block;*/
 }
 
 .table-header{
@@ -79,4 +76,8 @@
 }
 .option-windows-panel label{
     font-weight: bold;
+}
+
+.closeOrder{
+    width: 50%;
 }

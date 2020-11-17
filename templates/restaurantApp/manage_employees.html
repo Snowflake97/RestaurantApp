@@ -48,7 +48,7 @@
             <th scope="col">Stanowisko</th>
             <th scope="col">Adres</th>
             <th scope="col">Telefon</th>
-            <th scope="col">Handle</th>
+            <th class="right-align" scope="col">Opcje</th>
         </tr>
         </thead>
         <tbody>
@@ -66,12 +66,10 @@
                 {% endif %}
                 <td>{{ employee.person.address }}</td>
                 <td>{{ employee.person.phone_number }}</td>
-                <td>
+                <td class="right-align">
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            Opcje
-                        </button>
+                                aria-haspopup="true" aria-expanded="false"></button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url "restaurantApp:edit_employee" employee.id %}">Edytuj
                                 pracownika</a>

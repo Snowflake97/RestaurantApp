@@ -5,19 +5,6 @@ from django.contrib.auth.models import User
 import datetime
 
 
-# Create your models here.
-# class IngredientType(models.Model):
-#     INGREDIENT_TYPES = (
-#         ('ND', 'NOT DEFINED'),
-#         ('S', 'Ser'),
-#         ('M', 'Mięso'),
-#         ('W', 'Warzywo'),
-#         ('N', 'Napój'),
-#     )
-#     ingredient_type = models.CharField(max_length=3, choices=INGREDIENT_TYPES, default='ND')
-#
-#     def __str__(self):
-#         return self.ingredient_type
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
@@ -43,8 +30,11 @@ class Ingredient(models.Model):
              update_fields=None):
         super().save()
         for restaurant in Restaurant.objects.all():
-            storage = Storage.objects.create(ingredient_id=self.id, restaurant=restaurant, quantity=0)
-            storage.save()
+            print(restaurant)
+            storage, created = Storage.objects.get_or_create(ingredient_id=self.id, restaurant=restaurant, quantity=0)
+            if created:
+                storage.save()
+            # storage.save()
 
 
 class Address(models.Model):
@@ -93,7 +83,7 @@ class Restaurant(models.Model):
                     if products_dictonary.get(product):
                         products_dictonary[product] += quantity
                     else:
-                        products_dictonary = {**products_dictonary, **{product:quantity}}
+                        products_dictonary = {**products_dictonary, **{product: quantity}}
         return products_dictonary
 
     def get_ingredients_usage_from_time_period(self, date_start, date_end):
@@ -115,7 +105,15 @@ class Restaurant(models.Model):
         for order in orders:
             total_value += order.total_price
 
-        return round(total_value,2)
+        return round(total_value, 2)
+
+    def free_tables(self, date, reservation_start, reservation_end):
+        free_tables = []
+        tables = Table.objects.filter(restaurant_id=self.id)
+        for table in tables:
+            if table.is_free(date, reservation_start, reservation_end):
+                free_tables.append(table)
+        return free_tables
 
 
 class Storage(models.Model):
@@ -137,7 +135,6 @@ class Storage(models.Model):
     def edit_quantity(self, quantity):
         self.quantity = quantity
         self.save()
-
 
 
 class Product(models.Model):
@@ -307,6 +304,10 @@ class Order(models.Model):
 
         return ingredients_dictonary
 
+    def remove_product(self, product):
+        product_order = ProductOrder.objects.get(order_id=self.id, product=product)
+        product_order.delete()
+
 
 class ProductOrder(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -343,15 +344,12 @@ class Table(models.Model):
                 return False
         return True
 
-    def make_reservation(self, client_name, client_phone, reservation_start, reservation_end):
-        if self.is_free(reservation_start, reservation_end):
-            reservation = Reservation.objects.create(client_name=client_name, client_phone=client_phone,
-                                                     date_start=reservation_start, date_end=reservation_end,
+    def make_reservation(self, client_name, client_phone, date, reservation_start, reservation_end):
+        if self.is_free(date, reservation_start, reservation_end):
+            reservation = Reservation.objects.create(client_name=client_name, client_phone=client_phone, date=date,
+                                                     time_start=reservation_start, time_end=reservation_end,
                                                      table_id=self.id)
             reservation.save()
-            print("Zarezerwowano stolik")
-        else:
-            print("Stolika nie mozna zarezerwowac")
 
 
 class Reservation(models.Model):

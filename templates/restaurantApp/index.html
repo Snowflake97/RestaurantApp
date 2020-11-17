@@ -2,11 +2,17 @@
 {% extends "restaurantApp/base.html" %}
 
 {% block body_block %}
-    <div class="jumbotron">
-    <h1>Inzynierka</h1>
-    {% if user.is_authenticated %}
-        <p>Zalogowano użytkownika: {{ user.employee }}</p>
-        <p>Konto: {{ user }}</p>
-    {% endif %}
-    </div>
+    <style>
+        .jumbotron {
+            margin-top: 10%;
+        }
+    </style>
+{#    <div class="jumbotron">#}
+{#        <h1 align="center">Praca dyplomowa</h1>#}
+{#        {% if user.is_authenticated %}#}
+{#            <br><br>#}
+{#            <p align="right">Zalogowano użytkownika: {{ user.employee }}</p>#}
+            {#        <p>Konto: {{ user }}</p>#}
+{#        {% endif %}#}
+{#    </div>#}
 {% endblock %}

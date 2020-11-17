@@ -4,49 +4,91 @@
 
 {% block css_block %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 {% endblock css_block %}
 
 {% block body_block %}
-    <form id="newProduct" method="post" enctype="multipart/form-data" name="product">
-        {% csrf_token %}
-        <label for="product-name">Nazwa produktu:</label>
-        <input type="text" id="product-name" name="product-name" required>
-        <p></p>
-        <label for="product-price">Cena produktu:</label>
-        <input type="number" step="0.01" id="product-price" name="product-price" min="0" required>
-        <p></p>
+    <div class="jumbotron">
+    <div class="form-default">
+        <form id="newProduct" method="post" enctype="multipart/form-data" name="product">
+            {% csrf_token %}
 
-        <select name="product-type">
-            {% if product_type == "U" %}
-                <option value="P">Posiłek</option>
-                <option value="N">Napój</option>
-            {% elif product_type == "P" %}
-                <option value="P">Posiłek</option>
-            {% elif product_type == "N" %}
-                <option value="N">Napój</option>
-            {% endif %}
-        </select>
-        <p></p>
-        {% for ing in ingredients %}
-            <input class="checkboxes" type="checkbox" id="{{ ing.id }}" value="{{ ing.id }}" name="ID:{{ ing.name }}">
-            <label for="{{ ing.id }}">{{ ing.name }}</label>
-            <input class="quantity-input" type="number" id="input-{{ ing.id }}" name="QUANTITY:{{ ing.name }}" min="0" disabled value="0">
-            {{ ing.quantity_type }}
-            <p></p>
-        {% endfor %}
-        <input type="submit">
-    </form>
+
+            <div class="form-group row">
+                <label for="product-name" class="col-sm-2 col-form-label">Nazwa produktu:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" id="product-name" name="product-name" required>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="product-price" class="col-sm-2 col-form-label">Cena produktu:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="number" step="0.01" id="product-price" name="product-price"
+                           min="0" required>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="product-type" class="col-sm-2 col-form-label">Typ produktu:</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="product-type" name="product-type">
+                        {% if product_type == "U" %}
+                            <option value="P">Posiłek</option>
+                            <option value="N">Napój</option>
+                        {% elif product_type == "P" %}
+                            <option value="P">Posiłek</option>
+                        {% elif product_type == "N" %}
+                            <option value="N">Napój</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+
+
+
+
+            {% for ing in ingredients %}
+
+                <div class="form-group row">
+                    <div class="col-sm-1">
+                        <input class="form-control checkboxes" type="checkbox" id="{{ ing.id }}"
+                               value="{{ ing.id }}"
+                               name="ID:{{ ing.name }}">
+                    </div>
+                    <label for="{{ ing.id }}" class="col-sm-2 col-form-label">{{ ing.name }}</label>
+
+                    <div class="col-sm-8">
+                        <input class="form-control quantity-input" type="number" id="input-{{ ing.id }}"
+                               name="QUANTITY:{{ ing.name }}"
+                               min="0" disabled value="0">
+
+                    </div>
+                    <div class="col-sm-1">
+                        {{ ing.quantity_type }}
+                    </div>
+                </div>
+
+
+                <p></p>
+            {% endfor %}
+            <input class="form-control btn btn-primary btn-lg" type="submit">
+        </form>
+    </div>
+    </div>
 {% endblock %}
 {% block script %}
     <script>
         console.log($(".quantity-input"))
-    $(".checkboxes").click(function () {
-        var element_id = "#input-" + this.id
-        if($(element_id).attr('disabled')){
-            $(element_id).removeAttr('disabled');
-        } else {
-            $(element_id).attr('disabled', 'disabled');
-        }
-    })
+        $(".checkboxes").click(function () {
+            var element_id = "#input-" + this.id
+            if ($(element_id).attr('disabled')) {
+                $(element_id).removeAttr('disabled');
+            } else {
+                $(element_id).attr('disabled', 'disabled');
+            }
+        })
     </script>
 {% endblock %}

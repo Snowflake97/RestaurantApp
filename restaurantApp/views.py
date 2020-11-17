@@ -44,7 +44,7 @@ def special(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse("restaurantApp:thx"))
+    return redirect('/')
 
 
 def thx(request):
@@ -110,7 +110,8 @@ def manage_orders(request):
     employee = request.user.employee
     active_employee_orders = Order.objects.filter(employee=employee, status="A")
     closed_employee_orders = Order.objects.filter(employee=employee, status="Z")
-    return render(request, "restaurantApp/manage_orders.html", {"active_orders":active_employee_orders, "closed_orders":closed_employee_orders})
+    return render(request, "restaurantApp/manage_orders.html",
+                  {"active_orders": active_employee_orders, "closed_orders": closed_employee_orders})
 
 
 @login_required
@@ -121,7 +122,8 @@ def order_detail(request, id):
     active_employee_orders = Order.objects.filter(employee=employee, status="A")
     closed_employee_orders = Order.objects.filter(employee=employee, status="Z")
     return render(request, "restaurantApp/manage_orders.html",
-                  {"order_detail": order_detail, "products_order": products_order, "active_orders":active_employee_orders, "closed_orders":closed_employee_orders})
+                  {"order_detail": order_detail, "products_order": products_order,
+                   "active_orders": active_employee_orders, "closed_orders": closed_employee_orders})
 
 
 @login_required
@@ -146,6 +148,7 @@ def edit_product_order(request, id):
         return render(request, "restaurantApp/edit_product_order.html", {"product_order": product_order})
 
 
+@login_required
 def client_form(request, restaurant_id, reservation_date, time_start, time_end, table_id):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -166,12 +169,14 @@ def client_form(request, restaurant_id, reservation_date, time_start, time_end, 
                        "time_end": time_end, "table": table})
 
 
+@login_required
 def products_group(request):
     # ingredient_types = IngredientType.objects.all()
     meals = Product.objects.filter(product_type='P')
     return render(request, "restaurantApp/manage_products.html", {"data": meals, "type": "meals"})
 
 
+@login_required
 def get_products(request, type="meals"):
     if type == "meals":
         meals = Product.objects.filter(product_type='P')
@@ -192,6 +197,7 @@ def get_products(request, type="meals"):
                       {"data": products_with_ingredient_type, "type": type})
 
 
+@login_required
 def order_add_product(request, id, type="meals"):
     if type == "meals":
         meals = Product.objects.filter(product_type='P')
@@ -212,6 +218,7 @@ def order_add_product(request, id, type="meals"):
                       {"data": products_with_ingredient_type, "id": id, "type": type})
 
 
+@login_required
 def reservation(request):
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
@@ -238,6 +245,7 @@ def reservation(request):
     return render(request, "restaurantApp/reservation.html", {"restaurants": restaurants})
 
 
+@login_required
 def new_product(request, product_type):
     ingredients = Ingredient.objects.all()
     if request.method == "POST":
@@ -260,11 +268,13 @@ def new_product(request, product_type):
     return render(request, "restaurantApp/new_product.html", {"ingredients": ingredients, "product_type": product_type})
 
 
+@login_required
 def order_add_beverage(request, id):
     beverages = Product.objects.filter(product_type='N')
     return render(request, "restaurantApp/order_add_product.html", {"data": beverages, "id": id})
 
 
+@login_required
 def order_id_add_product_id(request, id, product_id):
     order = Order.objects.get(id=id)
     quantity = 1
@@ -274,6 +284,7 @@ def order_id_add_product_id(request, id, product_id):
     return redirect(f'/order/{order.id}/')
 
 
+@login_required
 def edit_product(request, id):
     all_ingredients = Ingredient.objects.all()
     if request.method == "POST":
@@ -306,7 +317,7 @@ def edit_product(request, id):
                 if product_to_delete:
                     product_to_delete.delete()
 
-        return redirect(f'/products_group/melas/')
+        return redirect(f'/products_group/meals/')
     else:
         ingredients = []
         product = Product.objects.get(id=id)
@@ -326,12 +337,14 @@ def edit_product(request, id):
                       {"product": product, "ingredients": ingredients})
 
 
+@login_required
 def delete_product(request, id):
     product = Product.objects.get(id=id)
     product.delete()
     return redirect(f'/products_group/')
 
 
+@login_required
 def close_order(request, id):
     if request.method == "POST":
         order = Order.objects.get(id=id)
@@ -343,6 +356,7 @@ def close_order(request, id):
     return redirect(f'/controll_panel/')
 
 
+@login_required
 def check_user(request):
     if request.is_ajax and request.method == "GET":
         username = request.GET.get("username", None)
@@ -356,6 +370,7 @@ def check_user(request):
     return JsonResponse({})
 
 
+@login_required
 def create_restaurant(request):
     if request.method == "POST":
         street_name = request.POST.get("street_name")
@@ -378,6 +393,7 @@ def create_restaurant(request):
     return render(request, "restaurantApp/create_restaurant.html", {})
 
 
+@login_required
 def manage_ingredients(request, type="all"):
     if type == "all":
         ingredients = Ingredient.objects.all()
@@ -387,6 +403,7 @@ def manage_ingredients(request, type="all"):
                   {"data": ingredients})
 
 
+@login_required
 def add_ingredient(request):
     if request.method == "POST":
         ingredient_name = request.POST.get("ingredient_name")
@@ -399,12 +416,14 @@ def add_ingredient(request):
     return render(request, "restaurantApp/create_ingredient.html", {})
 
 
+@login_required
 def delete_ingredient(request, id):
     ingredient = Ingredient.objects.get(id=id)
     ingredient.delete()
     return redirect('/manage_ingredients/all/')
 
 
+@login_required
 def manage_employees(request, id=-1):
     restaurants = Restaurant.objects.all()
     if id != 0:
@@ -415,6 +434,7 @@ def manage_employees(request, id=-1):
     return render(request, "restaurantApp/manage_employees.html", {"restaurants": restaurants})
 
 
+@login_required
 def create_user(request):
     restuarants = Restaurant.objects.all()
     if request.method == "POST":
@@ -454,6 +474,7 @@ def create_user(request):
     return render(request, "restaurantApp/create_employee.html", {"restuarants": restuarants})
 
 
+@login_required
 def delete_employee(request, id):
     employee = Employee.objects.get(id=id)
     employee.user.delete()
@@ -463,6 +484,7 @@ def delete_employee(request, id):
     return redirect("/manage_employees/restaurant/0/")
 
 
+@login_required
 def edit_employee(request, id):
     employee = Employee.objects.get(id=id)
     if request.method == "POST":
@@ -495,6 +517,7 @@ def edit_employee(request, id):
     return render(request, "restaurantApp/edit_employee.html", {"employee": employee})
 
 
+@login_required
 def employee_set_password(request, id):
     employee = Employee.objects.get(id=id)
     if request.method == "POST":
@@ -508,6 +531,7 @@ def employee_set_password(request, id):
     return render(request, "restaurantApp/set_password_employee.html", {"employee": employee})
 
 
+@login_required
 def manage_restaurants(request, type, id=0):
     restaurants = Restaurant.objects.all()
     if type == "M":
@@ -528,6 +552,7 @@ def manage_restaurants(request, type, id=0):
                   {"restaurants": restaurants})
 
 
+@login_required
 def add_ingredient_to_storage(request, id):
     storage = Storage.objects.get(id=id)
     if request.method == "POST":
@@ -538,6 +563,7 @@ def add_ingredient_to_storage(request, id):
     return render(request, "restaurantApp/add_ingredient_to_storage.html", {"storage": storage})
 
 
+@login_required
 def edit_ingredient_to_storage(request, id):
     storage = Storage.objects.get(id=id)
     if request.method == "POST":
@@ -548,6 +574,7 @@ def edit_ingredient_to_storage(request, id):
     return render(request, "restaurantApp/edit_storage_ingredient.html", {"storage": storage})
 
 
+@login_required
 def edit_table(request, id):
     table = Table.objects.get(id=id)
     if request.method == "POST":
@@ -561,6 +588,7 @@ def edit_table(request, id):
     return render(request, "restaurantApp/edit_table.html", {"table": table})
 
 
+@login_required
 def delete_table(request, id):
     table = Table.objects.get(id=id)
     restaurant_id = table.restaurant_id
@@ -568,6 +596,7 @@ def delete_table(request, id):
     return redirect(f'/manage_restaurants/S/{restaurant_id}/')
 
 
+@login_required
 def add_table(request):
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
@@ -581,6 +610,7 @@ def add_table(request):
     return render(request, "restaurantApp/create_table.html", {"restaurants": restaurants})
 
 
+@login_required
 def raports(request):
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
@@ -597,4 +627,3 @@ def raports(request):
         return render(request, "restaurantApp/raports.html",
                       {"restaurants": restaurants, "products": products, "ingredients": ingredients, "income": income})
     return render(request, "restaurantApp/raports.html", {"restaurants": restaurants})
-

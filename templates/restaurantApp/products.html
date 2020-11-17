@@ -2,12 +2,18 @@
 {% extends "restaurantApp/base.html" %}
 
 {% block body_block %}
+    <style>
+        .jumbotron {
+            margin-top: 10%;
+        }
+    </style>
+
     <div class="jumbotron">
-        <h1>Pisiłki</h1>
+        <h1 >Posiłki</h1>
         <ol>
             {% for product in products %}
                 {% if product.product_type == 'P' %}
-                    <li> {{ product }} </li>
+                    <li> {{ product.name }}, Cena: {{ product.price }} zł </li>
                     <ul>
                         {% for product_ingredient in products_ingredients %}
                             {% if product == product_ingredient.product %}
@@ -25,7 +31,7 @@
         <ol>
             {% for product in products %}
                 {% if product.product_type == 'N' %}
-                    <li> {{ product }} </li>
+                    <li> {{ product.name }}, Cena: {{ product.price }} zł </li>
                 {% endif %}
             {% endfor %}
         </ol>
