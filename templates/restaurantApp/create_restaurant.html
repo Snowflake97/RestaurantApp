@@ -15,7 +15,7 @@
             <form id="create-restaurant-form" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group row">
                     {% csrf_token %}
-                    <label for="street_name" class="col-sm-2 col-form-label">Adres</label>
+                    <label for="street_name" class="col-sm-2 col-form-label">Nazwa ulicy</label>
                     <div class="col-sm-10">
                         <input class="form-control" class="form-control" id="street_name" type="text" name="street_name" required>
                     </div>

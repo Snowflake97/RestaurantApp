@@ -158,7 +158,7 @@ def client_form(request, restaurant_id, reservation_date, time_start, time_end, 
             reservation = Reservation.objects.create(client_name=name, client_phone=phone, table=table,
                                                      date=reservation_date, time_start=time_start, time_end=time_end)
             reservation.save()
-        return render(request, "restaurantApp/thx.html")
+        return render(request, "restaurantApp/index.html")
     else:
         restaurant = Restaurant.objects.get(id=restaurant_id)
         table = Table.objects.get(id=table_id)
@@ -371,6 +371,7 @@ def check_user(request):
 
 
 @login_required
+@manager_required
 def create_restaurant(request):
     if request.method == "POST":
         street_name = request.POST.get("street_name")
@@ -394,6 +395,7 @@ def create_restaurant(request):
 
 
 @login_required
+@manager_required
 def manage_ingredients(request, type="all"):
     if type == "all":
         ingredients = Ingredient.objects.all()
@@ -404,6 +406,7 @@ def manage_ingredients(request, type="all"):
 
 
 @login_required
+@manager_required
 def add_ingredient(request):
     if request.method == "POST":
         ingredient_name = request.POST.get("ingredient_name")
@@ -417,6 +420,7 @@ def add_ingredient(request):
 
 
 @login_required
+@manager_required
 def delete_ingredient(request, id):
     ingredient = Ingredient.objects.get(id=id)
     ingredient.delete()
@@ -424,6 +428,7 @@ def delete_ingredient(request, id):
 
 
 @login_required
+@manager_required
 def manage_employees(request, id=-1):
     restaurants = Restaurant.objects.all()
     if id != 0:
@@ -435,6 +440,7 @@ def manage_employees(request, id=-1):
 
 
 @login_required
+@manager_required
 def create_user(request):
     restuarants = Restaurant.objects.all()
     if request.method == "POST":
@@ -475,6 +481,7 @@ def create_user(request):
 
 
 @login_required
+@manager_required
 def delete_employee(request, id):
     employee = Employee.objects.get(id=id)
     employee.user.delete()
@@ -485,6 +492,7 @@ def delete_employee(request, id):
 
 
 @login_required
+@manager_required
 def edit_employee(request, id):
     employee = Employee.objects.get(id=id)
     if request.method == "POST":
@@ -518,6 +526,7 @@ def edit_employee(request, id):
 
 
 @login_required
+@manager_required
 def employee_set_password(request, id):
     employee = Employee.objects.get(id=id)
     if request.method == "POST":
@@ -532,6 +541,7 @@ def employee_set_password(request, id):
 
 
 @login_required
+@manager_required
 def manage_restaurants(request, type, id=0):
     restaurants = Restaurant.objects.all()
     if type == "M":
@@ -553,6 +563,7 @@ def manage_restaurants(request, type, id=0):
 
 
 @login_required
+@manager_required
 def add_ingredient_to_storage(request, id):
     storage = Storage.objects.get(id=id)
     if request.method == "POST":
@@ -564,6 +575,7 @@ def add_ingredient_to_storage(request, id):
 
 
 @login_required
+@manager_required
 def edit_ingredient_to_storage(request, id):
     storage = Storage.objects.get(id=id)
     if request.method == "POST":
@@ -575,6 +587,7 @@ def edit_ingredient_to_storage(request, id):
 
 
 @login_required
+@manager_required
 def edit_table(request, id):
     table = Table.objects.get(id=id)
     if request.method == "POST":
@@ -589,6 +602,7 @@ def edit_table(request, id):
 
 
 @login_required
+@manager_required
 def delete_table(request, id):
     table = Table.objects.get(id=id)
     restaurant_id = table.restaurant_id
@@ -597,6 +611,7 @@ def delete_table(request, id):
 
 
 @login_required
+@manager_required
 def add_table(request):
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
@@ -611,6 +626,7 @@ def add_table(request):
 
 
 @login_required
+@manager_required
 def raports(request):
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
@@ -621,9 +637,6 @@ def raports(request):
         products = restaurant.get_products_from_time_period(start_date, end_date)
         ingredients = restaurant.get_ingredients_usage_from_time_period(start_date, end_date)
         income = restaurant.get_income_from_time_period(start_date, end_date)
-        print(products)
-        print(ingredients)
-        print(start_date)
         return render(request, "restaurantApp/raports.html",
                       {"restaurants": restaurants, "products": products, "ingredients": ingredients, "income": income})
     return render(request, "restaurantApp/raports.html", {"restaurants": restaurants})

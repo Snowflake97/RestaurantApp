@@ -10,11 +10,13 @@ body {
 html, body {
     height: 100%;
     width: 100%;
-    background: url("/static/img/b1.jpg") no-repeat 0 0 scroll;
+    /*background: url("/static/img/b5.jpg") no-repeat 0 0 scroll;*/
+
+    background: url("/static/img/b3.JPG") no-repeat 0 0 scroll;
     height: 100%;
     width: 100%;
-
-    background-position: center;
+    /*background-position: center;*/
+    background-position: 0px -40px;
     background-repeat: no-repeat;
     background-size: cover;
 
