@@ -34,3 +34,10 @@ services:
     stdin_open: true
     depends_on:
       - backend
+  pgadmin:
+    container_name: pgadmin4RestaurantApp
+    image: dpage/pgadmin4
+    restart: always
+    env_file: dev.env
+    ports:
+      - "5050:80"
