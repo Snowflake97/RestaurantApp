@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from restaurantApp.models import *
 from scripts import functions
 
+
 def manager_required(view_func):
     def _wrapped_view_func(request, *args, **kwargs):
         if request.user.employee.position != "M":
@@ -22,7 +23,6 @@ def manager_required(view_func):
 
 
 def index(request):
-    print("XDDD")
     return render(request, "restaurantApp/index.html", None)
 
 
